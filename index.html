@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Template Generator</title>
+    
+    <!-- V V V THIS IS THE MAGIC SCRIPT TO PREVENT FLICKERING V V V -->
+    <script>
+      (function() {
+        try {
+          const preference = localStorage.getItem('themePreference');
+          if (preference === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else if (preference === 'light') {
+            document.documentElement.classList.remove('dark');
+          } else { // 'system' or null
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+              document.documentElement.classList.add('dark');
+            }
+          }
+        } catch (e) {
+          // In case of any error, do nothing and let React handle it.
+        }
+      })();
+    </script>
+    <!-- ^ ^ ^ THIS IS THE MAGIC SCRIPT TO PREVENT FLICKERING ^ ^ ^ -->
+
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>
