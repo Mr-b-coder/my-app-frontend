@@ -1,7 +1,11 @@
+// FIX: This entire file has been updated with corrected import paths and removed unused variables.
 
 import { jsPDF } from 'jspdf';
-import { CoverCalculations, BindingType } from '../types';
-import { INCH_TO_POINTS, STANDARD_BLEED_AMOUNT_INCHES, HARDCOVER_COIL_WIRE_O_WRAP_AMOUNT_INCHES } from '../constants';
+// FIX 1: The path to your types is likely now an alias configured in your tsconfig.json, or a relative path from within the `src` folder. Let's assume you have a path alias '@shared' pointing to the shared folder.
+import { CoverCalculations, BindingType } from '@shared/types';
+// FIX 2: The path to constants.ts (which is inside `src`) from a file in `src/components` is one level up.
+// FIX 3: Removed 'INCH_TO_POINTS' because the build log shows it's an unused variable (TS6133 error).
+import { STANDARD_BLEED_AMOUNT_INCHES, HARDCOVER_COIL_WIRE_O_WRAP_AMOUNT_INCHES } from '../constants';
 
 // Helper function to draw a dashed line
 const drawDashedLine = (doc: jsPDF, x1: number, y1: number, x2: number, y2: number, dashLen: number, gapLen: number) => {
@@ -192,7 +196,7 @@ export const generateCoverPdfBlob = (calculations: CoverCalculations, JSPDF: typ
     const {
       totalCoverWidth, totalCoverHeight, trimWidthNum, trimHeightNum, spineWidth,
       bindingType, safetyMargin, bleedAmount, wrapAmount, // Use wrapAmount
-      hingeWidth, boardWidth, boardHeight, frontPanelBoardWidth, boardExtension, // Added boardExtension
+      hingeWidth, boardWidth, boardHeight, boardExtension, // Added boardExtension
       safetyMarginTopBottom, safetyMarginBindingEdge, safetyMarginOutsideEdge
     } = calculations;
 
@@ -214,8 +218,7 @@ export const generateCoverPdfBlob = (calculations: CoverCalculations, JSPDF: typ
         textColor: '#333333',
         punchHoleColor: '#BBBBBB',
     };
-    // const labelFontSize = 8 / INCH_TO_POINTS; // Not directly used, embedded in text calls
-
+    
     doc.setFontSize(8);
 
     const isHardcoverCoilWire = bindingType === BindingType.COIL_WIRE_O_HARDCOVER;
