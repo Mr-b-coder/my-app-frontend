@@ -5,7 +5,6 @@ import { jsPDF } from 'jspdf';
 import { CoverCalculations, BindingType } from '@shared/types';
 // FIX 2: The path to constants.ts (which is inside `src`) from a file in `src/components` is one level up.
 // FIX 3: Removed 'INCH_TO_POINTS' because the build log shows it's an unused variable (TS6133 error).
-import { STANDARD_BLEED_AMOUNT_INCHES, HARDCOVER_COIL_WIRE_O_WRAP_AMOUNT_INCHES } from '../constants';
 
 // Helper function to draw a dashed line
 const drawDashedLine = (doc: jsPDF, x1: number, y1: number, x2: number, y2: number, dashLen: number, gapLen: number) => {
