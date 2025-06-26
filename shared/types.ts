@@ -1,5 +1,7 @@
 // shared/types.ts
 
+// FIX: Added the missing PaperStockOption interface at the bottom of this file.
+
 export enum BindingType {
   PERFECT_BIND = 'Perfect Bind / Softcover',
   CASE_BIND = 'Case Bind / Hardcover',
@@ -37,4 +39,10 @@ export interface CoverCalculations {
   safetyMarginTopBottom?: number;
   safetyMarginBindingEdge?: number;
   safetyMarginOutsideEdge?: number;
+}
+
+// Add this interface to fix the error from constants.ts
+export interface PaperStockOption {
+  name: string;
+  ppi: number;
 }

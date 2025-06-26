@@ -57,10 +57,6 @@ export const TemplatePreview = ({
   const svgEffectiveHeight = totalCoverHeight * scaleFactor;
 
   // ✨ --- FONT SIZE ADJUSTMENTS --- ✨
-  // You can adjust the font sizes here.
-  // FONT_SIZE is for the main labels like "Front Board".
-  // INFO_FONT_SIZE is for smaller technical labels like "Wrap: 0.750".
-  // BARCODE_LABEL_FONT_SIZE is for the "Barcode Area" text.
   const FONT_SIZE = Math.max(8, Math.min(11, svgEffectiveWidth / 45));
   const INFO_FONT_SIZE = Math.max(6, Math.min(10, FONT_SIZE * 0.8));
   const BARCODE_LABEL_FONT_SIZE = Math.max(5, Math.min(8, INFO_FONT_SIZE * 0.8));
@@ -68,7 +64,6 @@ export const TemplatePreview = ({
   const isDarkMode = theme === 'dark';
 
   // ✨ --- COLOR ADJUSTMENTS --- ✨
-  // You can change the hex codes here to adjust the colors of the guides and text.
   const colors = {
     trimColor: '#4A90E2',                   // Blue
     spineFoldColor: '#9013FE',              // Purple
@@ -300,9 +295,10 @@ export const TemplatePreview = ({
     const yPosBoardLabel = boardStartY - INFO_FONT_SIZE * 1.0;
     const yPosSpineValueLabel = INFO_FONT_SIZE * 1.25;
 
-    const backBoardSafeX = boardStartX + safety;
-    const backBoardSafeY = boardStartY + safety;
-    const backBoardSafeHeight = assemblyH - (2 * safety);
+    // FIX: The three lines below were unused variables and caused build errors. They have been removed.
+    // const backBoardSafeX = boardStartX + safety;
+    // const backBoardSafeY = boardStartY + safety;
+    // const backBoardSafeHeight = assemblyH - (2 * safety);
 
     return (
       <>
@@ -366,7 +362,8 @@ export const TemplatePreview = ({
 
     let barcodeArea: JSX.Element | null = null;
     let fileSpecArea: JSX.Element | null = null;
-    let yTopOfBarcodeRectForFrontCover = 0;
+    // FIX: This variable was unused and caused a build error. It has been removed.
+    // let yTopOfBarcodeRectForFrontCover = 0;
 
     const guideLabelIndentX = INFO_FONT_SIZE * 0.35;
     const firstLabelYPos = INFO_FONT_SIZE * 1.25;

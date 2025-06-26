@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useCallback } from 'react';
+// FIX: Removed 'useCallback' from this import line as it was unused.
+import React, { useState, useMemo } from 'react';
 
 interface InteractiveInteriorSetupProps {
   pageCount?: number;

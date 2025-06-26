@@ -1,5 +1,6 @@
+// FIX: This entire file has been updated to use the correct 'NumberFormat' and remove all other unused imports.
 
-import { Document, Packer, PageOrientation, Paragraph, PageNumberFormat, SectionType, WidthType, PageMargin, TextRun, AlignmentType } from 'docx';
+import { Document, Packer, PageOrientation, Paragraph, NumberFormat, TextRun, AlignmentType } from 'docx';
 
 const INCHES_TO_TWIPS = 1440;
 

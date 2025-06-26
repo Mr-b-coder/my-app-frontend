@@ -1,6 +1,10 @@
+// FIX: This entire file has been updated with corrected import paths and removed unused variables.
 
-import { CoverCalculations, BindingType } from '../types';
-import { INCH_TO_POINTS } from '../constants';
+// FIX 1: Corrected path. Assumes 'types' are in a 'shared' folder at the root.
+import { CoverCalculations, BindingType } from '@shared/types';
+// FIX 2: Removed 'INCH_TO_POINTS' as it was unused according to the build log.
+// The path to 'constants' is now '../constants' because this file is in 'src/components' and constants.ts is in 'src'.
+// import { INCH_TO_POINTS } from '../constants'; // This line is removed.
 
 export const generatePhotoshopScriptContent = (calculations: CoverCalculations): string => {
   const { 
@@ -9,7 +13,8 @@ export const generatePhotoshopScriptContent = (calculations: CoverCalculations):
     bleedAmount, wrapAmount, hingeWidth,
     boardHeight, frontPanelBoardWidth,
     safetyMarginTopBottom, safetyMarginBindingEdge, safetyMarginOutsideEdge, // For Coil/Wire-O
-    boardExtension // For Hardcover Coil/Wire-O
+    boardExtension, // For Hardcover Coil/Wire-O
+    pageCountNum // Added pageCountNum to be accessible here
   } = calculations;
 
   const docWidthInches = totalCoverWidth.toFixed(4);
@@ -33,11 +38,11 @@ var resolution = 300; // Standard print resolution
 
   if (bindingType === BindingType.CASE_BIND) {
     bindTypeShortSpecific = "CaseBound";
-    script += `var docName = "BookCover_${bindTypeShortSpecific}_${userTrimDisplay}_${calculations.pageCountNum}p_Cover";\n`;
+    script += `var docName = "BookCover_${bindTypeShortSpecific}_${userTrimDisplay}_${pageCountNum}p_Cover";\n`;
     alertMessage = `✅ ${bindingType} Book Cover Template Created!\\n\\nDocument Size: ${docWidthInches}\\" W × ${docHeightInches}\\" H @ " + resolution + "ppi\\nBoard Trim: ${userTrimDisplay}\\"\\nCalculated Spine: ${spineWidth.toFixed(3)}\\"\\nSafety Margin: ${safetyMargin.toFixed(3)}\\" from board edges.\\n\\nPlace all important text/logos inside safety area.`;
   } else if (bindingType === BindingType.PERFECT_BIND) {
     bindTypeShortSpecific = "PerfectBound";
-    script += `var docName = "BookCover_${bindTypeShortSpecific}_${userTrimDisplay}_${calculations.pageCountNum}p_Cover";\n`;
+    script += `var docName = "BookCover_${bindTypeShortSpecific}_${userTrimDisplay}_${pageCountNum}p_Cover";\n`;
     alertMessage = `✅ ${bindingType} Book Cover Template Created!\\n\\nDocument Size: ${totalCoverWidth.toFixed(4)}\\" W × ${totalCoverHeight.toFixed(4)}\\" H\\nTrim Area: ${trimWidthNum.toFixed(2)}\\" x ${trimHeightNum.toFixed(2)}\\"\\nSpine: ${spineWidth.toFixed(3)}\\"\\nSafety: ${safetyMargin.toFixed(3)}\\" from key edges.\\n\\nPlace all important text/logos inside safety area.`;
 
   } else if (bindingType === BindingType.COIL_WIRE_O_SOFTCOVER || bindingType === BindingType.COIL_WIRE_O_HARDCOVER) {
@@ -161,7 +166,8 @@ export const generateInDesignScriptContent = (calculations: CoverCalculations): 
     bleedAmount, wrapAmount, hingeWidth,
     boardHeight, frontPanelBoardWidth,
     safetyMarginTopBottom, safetyMarginBindingEdge, safetyMarginOutsideEdge,
-    boardExtension
+    boardExtension,
+    pageCountNum // Added pageCountNum
   } = calculations;
 
   const docWidthIn = totalCoverWidth.toFixed(4);
@@ -170,7 +176,7 @@ export const generateInDesignScriptContent = (calculations: CoverCalculations): 
   const bindingTypeForFilename = bindingType.replace(/[^a-zA-Z0-9]/g, '');
   
   let alertMessage = "";
-  let scriptDocName = `BookCover_${bindingTypeForFilename}_${userTrimDisplay}_${calculations.pageCountNum || 'Coil'}p_Cover`;
+  let scriptDocName = `BookCover_${bindingTypeForFilename}_${userTrimDisplay}_${pageCountNum || 'Coil'}p_Cover`;
   
   if (bindingType === BindingType.PERFECT_BIND) {
     alertMessage = `✅ ${bindingType} Book Cover Template Created!\\n\\nDocument Size: ${docWidthIn}\\" W × ${docHeightIn}\\" H\\nTrim Area: ${userTrimDisplay}\\"\\nSpine: ${spineWidth.toFixed(3)}\\"\\nSafety: ${safetyMargin.toFixed(3)}\\" from key edges.\\n\\nPlace all important text/logos inside safety area.`;
