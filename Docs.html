@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AcuTemplate Developer Docs</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: auto; padding: 2rem; line-height: 1.6; }
+    h1, h2, h3 { color: #2c3e50; }
+    code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; }
+    pre { background: #f4f4f4; padding: 1rem; border-radius: 4px; overflow-x: auto;}
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+
+<h1>AcuTemplate Developer Docs</h1>
+<p>Welcome, new dev! 🎉 This guide helps you get started fast and understand key project areas.</p>
+
+<h2>1. Project Overview</h2>
+<p>AcuTemplate generates print-ready PSD and PDF book cover templates via front‑end inputs and a Node.js backend.</p>
+
+<h2>2. Setup Instructions</h2>
+<pre><code># Clone & install
+git clone https://github.com/Mr-b-coder/my-app-frontend.git
+cd my-app-frontend
+npm install
+
+# Run frontend
+npm run dev
+
+# In a new terminal:
+git clone https://github.com/Mr-b-coder/my-app-backend.git
+cd my-app-backend
+npm install
+npm run start
+</code></pre>
+
+<h2>3. File Structure Overview</h2>
+<table>
+<tr><th>Path</th><th>Description</th></tr>
+<tr><td><code>/frontend/</code></td><td>React app with inputs, preview canvas, and export UI</td></tr>
+<tr><td><code>/frontend/components/</code></td><td>Reusable UI elements like forms, canvas, buttons</td></tr>
+<tr><td><code>/frontend/utils/</code></td><td>Calculation & drawing logic for guides and layouts</td></tr>
+<tr><td><code>/frontend/styles/</code></td><td>Color/theme settings</td></tr>
+<tr><td><code>/backend/</code></td><td>Node.js server generating PSD/PDF</td></tr>
+<tr><td><code>/backend/pdfGenerator.ts</code></td><td>PDF export with bleed/spine guides</td></tr>
+<tr><td><code>/backend/psdBuilder.ts</code></td><td>Layered PSD creator</td></tr>
+<tr><td><code>/backend/output/</code></td><td>Temp folder for generated files</td></tr>
+</table>
+
+<h2>4. Customizing Styles & Colors</h2>
+<p>Edit your color theme here:</p>
+<pre><code>/frontend/styles/theme.ts</code></pre>
+<p>You’ll find variables for:</p>
+<ul>
+  <li><strong>primary</strong> – buttons and accents</li>
+  <li><strong>background</strong> – canvas wrapper bg</li>
+  <li><strong>guides</strong> – bleed/safety/spine lines</li>
+</ul>
+<p>For guide color changes, also update:</p>
+<pre><code>/frontend/utils/drawGuides.ts</code></pre>
+
+<h2>5. Backend Customizations</h2>
+<p>Modify export logic:</p>
+<ul>
+  <li><code>/backend/pdfGenerator.ts</code> – PDF layout</li>
+  <li><code>/backend/psdBuilder.ts</code> – PSD layers</li>
+</ul>
+<p>Headers are configured for safe downloads and CORS:</p>
+<pre><code>res.setHeader('Content-Disposition', 'attachment; filename="cover.pdf"');
+app.use(cors({ origin: 'https://acutemplate.netlify.app' }));</code></pre>
+
+<h2>6. API Endpoints</h2>
+<ul>
+  <li><strong>POST</strong> <code>/generate/pdf</code> – returns generated PDF</li>
+  <li><strong>POST</strong> <code>/generate/psd</code> – returns generated PSD</li>
+</ul>
+
+<h2>7. Deployment Notes</h2>
+<ul>
+  <li><strong>Frontend:</strong> Deploy from `my-app-frontend` to Netlify; uses `netlify.toml` for settings.</li>
+  <li><strong>Backend:</strong> Deploy from `my-app-backend` using Render, Railway, or Vercel functions.</li>
+  <li>Ensure HTTPS, CORS config, and production env vars are set.</li>
+</ul>
+
+<h2>8. Frequently Edited Files</h2>
+<table>
+<tr><th>Task</th><th>File to Edit</th></tr>
+<tr><td>Theme colors</td><td><code>/frontend/styles/theme.ts</code></td></tr>
+<tr><td>Spine/single size logic</td><td><code>/frontend/utils/calculateSizes.ts</code></td></tr>
+<tr><td>Guide drawing</td><td><code>/frontend/utils/drawGuides.ts</code></td></tr>
+<tr><td>PDF template style</td><td><code>/backend/pdfGenerator.ts</code></td></tr>
+<tr><td>PSD layer structure</td><td><code>/backend/psdBuilder.ts</code></td></tr>
+</table>
+
+<h2>9. What's Next</h2>
+<ul>
+  <li>Add interior & IDML export in <code>/backend/idmlBuilder.ts</code></li>
+  <li>User auth and project saving endpoints</li>
+  <li>Documentation updates in `/docs` for each release</li>
+</ul>
+
+<p>-- End of Docs --</p>
+
+</body>
+</html>
