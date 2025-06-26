@@ -450,7 +450,7 @@ const App: React.FC = () => {
         bookTitle: calculatedDimensions.bookTitle || 'Untitled',
       };
 
-      const response = await fetch('https://my-template-server.onrender.com', {
+      const response = await fetch('https://my-template-server.onrender.com/api/generate-template', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
