@@ -450,11 +450,17 @@ const App: React.FC = () => {
         bookTitle: calculatedDimensions.bookTitle || 'Untitled',
       };
 
-      const response = await fetch('http://localhost:3001/api/generate-template', {
+      // --- START OF CHANGE ---
+      // This now uses the environment variable to get the correct API URL
+      // for both local development and live production.
+      const apiUrl = `${import.meta.env.VITE_API_URL}/api/generate-template`;
+
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
+      // --- END OF CHANGE ---
 
       if (!response.ok) {
         const errData = await response.json().catch(() => ({ error: response.statusText }));
