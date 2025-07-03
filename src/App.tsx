@@ -450,7 +450,7 @@ const App: React.FC = () => {
         bookTitle: calculatedDimensions.bookTitle || 'Untitled',
       };
 
-      const response = await fetch('https://my-template-server.onrender.com/api/generate-template', {
+      const response = await fetch('http://localhost:3001/api/generate-template', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -614,8 +614,8 @@ const App: React.FC = () => {
       });
       const tempCanvas = document.createElement('canvas');
       const ctx = tempCanvas.getContext('2d');
-      if (!ctx) throw new Error("Could not get canvas context for Data Matrix download.");
-      const FONT_SIZE_PX_DM = 48; const TEXT_FONT_DM = `${FONT_SIZE_PX_DM}px 'Courier New', Courier, monospace`;
+      if (!ctx) { throw new Error("Could not get canvas context for Data Matrix download."); }
+      const FONT_SIZE_PX_DM = 96; const TEXT_FONT_DM = `${FONT_SIZE_PX_DM}px sans-serif`;
       const PADDING_DM = 20; const TEXT_IMAGE_GAP_DM = 15;
       ctx.font = TEXT_FONT_DM; const textMetrics = ctx.measureText(dataMatrixInput);
       const approxTextHeight = FONT_SIZE_PX_DM * 1.2;
@@ -811,7 +811,7 @@ const App: React.FC = () => {
                         {dataMatrixImageDataUrl ? (
                           <>
                             <img src={dataMatrixImageDataUrl} alt="Data Matrix Barcode" className="max-w-[150px] max-h-[150px] object-contain" />
-                            <div className="text-xl mt-2 font-monospace break-all text-center">{dataMatrixInput}</div>
+                            <div className="text-4xl mt-2 font-sans break-all text-center">{dataMatrixInput}</div>
                           </>
                         ) : (dataMatrixInput.trim() !== '' ? (
                           <div className="text-slate-500 text-sm text-center">
