@@ -700,6 +700,22 @@ const App: React.FC = () => {
         </div>
       </header>
 
+      {/* Beta Alert Banner */}
+      <div className="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-400 dark:border-amber-500 rounded-md">
+        <div className="flex items-center">
+          <div className="flex-shrink-0">
+            <svg className="h-5 w-5 text-amber-400 dark:text-amber-500" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div className="ml-3">
+            <p className="text-sm text-amber-700 dark:text-amber-300">
+              <span className="font-medium">Beta Notice:</span> Our Interior File Generator is temporarily disabled while we work on improvements. Please use the Cover File Generator for now.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <canvas ref={ean13CanvasRef} style={{ display: 'none' }}></canvas>
       <canvas ref={ean5CanvasRef} style={{ display: 'none' }}></canvas>
       <canvas ref={dataMatrixCanvasRef} style={{ display: 'none' }}></canvas>
@@ -906,10 +922,10 @@ const App: React.FC = () => {
                         <div className="mt-4 pt-4 border-t border-slate-300 dark:border-slate-700 space-y-4">
                           <h3 className="text-lg font-medium">Download Your Files</h3>
                           {isProcessing && currentProcessingFormat && ( <div className="mb-4 p-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-md text-sm text-center"> Generating {currentProcessingFormat}... Please wait. </div> )}
-                          <Button onClick={() => handleDownload('all')} leftIcon={<ZipFileIcon />} disabled={isProcessing} variant="primary" className="w-full"> Download All Files (Cover & Interior) </Button>
+                          <Button onClick={() => handleDownload('all')} leftIcon={<ZipFileIcon />} disabled={true} variant="primary" className="w-full opacity-50 cursor-not-allowed"> Download All Files (Temporarily Disabled) </Button>
                           <div className="flex space-x-3">
                             <Button onClick={() => handleDownload('cover')} leftIcon={<ZipFileIcon />} disabled={isProcessing} variant="secondary" className="flex-1"> Download Cover Files </Button>
-                            <Button onClick={() => handleDownload('interior')} leftIcon={<ZipFileIcon />} disabled={isProcessing} variant="secondary" className="flex-1"> Download Interior Files </Button>
+                            <Button onClick={() => handleDownload('interior')} leftIcon={<ZipFileIcon />} disabled={true} variant="secondary" className="flex-1 opacity-50 cursor-not-allowed"> Interior Files (Temporarily Disabled) </Button>
                           </div>
                         </div>
                       )}
