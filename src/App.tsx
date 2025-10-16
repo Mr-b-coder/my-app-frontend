@@ -710,7 +710,7 @@ const App: React.FC = () => {
           </div>
           <div className="ml-3">
             <p className="text-sm text-amber-700 dark:text-amber-300">
-              <span className="font-medium">Beta Notice:</span> Our Interior File Generator is temporarily disabled while we work on improvements. Please use the Cover File Generator for now.
+              <span className="font-medium">Notice:</span> Interior file downloads are temporarily disabled while we make improvements. Please use the "Download Cover Files" button for now.
             </p>
           </div>
         </div>
