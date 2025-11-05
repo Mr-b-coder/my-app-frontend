@@ -91,7 +91,7 @@ const App: React.FC = () => {
     const updateFavicon = () => {
       const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       if (faviconSvgLink) {
-        faviconSvgLink.href = isSystemDark ? '/src/Assets/favicon-dark.svg' : '/src/Assets/favicon.svg';
+        faviconSvgLink.href = isSystemDark ? '/favicon-dark.svg' : '/favicon.svg';
       }
     };
     
