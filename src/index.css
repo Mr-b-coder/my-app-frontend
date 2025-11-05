@@ -1,7 +1,7 @@
 @layer base {
   body {
-    @apply bg-slate-100 dark:bg-slate-900; /* Light blue/gray for light mode, dark for dark mode */
-    @apply text-slate-800 dark:text-slate-200; /* Sets the default text color for the whole app */
+    @apply bg-bg-primary dark:bg-dark-bg-primary; /* Light blue/gray for light mode, dark for dark mode */
+    @apply text-text-primary dark:text-dark-text-primary; /* Sets the default text color for the whole app */
   }
 }
 

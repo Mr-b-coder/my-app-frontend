@@ -697,7 +697,7 @@ const App: React.FC = () => {
   const paperStockOptionsForSelect = PAPER_STOCK_OPTIONS.map(opt => ({ value: opt.ppi.toString(), label: opt.name }));
   const bindingTypeOptionsForSelect = [{ value: '', label: "Select Binding Type" }, ...Object.values(BindingType).map(bt => ({ value: bt, label: bt }))];
   const condensedSummaryLines = useMemo(() => getCondensedSummaryLines(calculatedDimensions), [calculatedDimensions]);
-  const legendColorMapping = { bleed: '#FF6B6B', wrap: '#FF6B6B', trim: '#4A90E2', safety: '#22C55E', spine: '#9013FE', hinge: '#F5A623', board: '#444444', };
+  const legendColorMapping = { bleed: '#ba4335', wrap: '#ba4335', trim: '#3266d4', safety: '#23C27D', spine: '#274983', hinge: '#f3c94f', board: '#6B7280', };
   const currentLegendItems = useMemo(() => {
     if (!calculatedDimensions) return [];
     const items: { label: string, color: string, type: 'line' | 'line-dashed' | 'box' }[] = [];
@@ -756,15 +756,15 @@ const App: React.FC = () => {
 
       <div className="grid lg:grid-cols-12 gap-8 items-start flex-grow">
         <div className="lg:col-span-4 space-y-8">
-          <div className="bg-white dark:bg-[#1E293B] p-0 shadow-lg rounded-lg border border-[#DDE3ED] dark:border-[#334155]" aria-labelledby="barcode-generator-heading">
+          <div className="bg-bg-secondary dark:bg-dark-bg-primary p-0 shadow-lg rounded-lg border border-border-color dark:border-dark-border-color" aria-labelledby="barcode-generator-heading">
             <button
               onClick={() => setShowBarcodeGeneratorUI(!showBarcodeGeneratorUI)}
-              className="w-full p-4 bg-[#DDE3ED] dark:bg-[#334155] hover:bg-[#A8B8D0] dark:hover:bg-[#475569] rounded-t-lg flex justify-between items-center text-left"
+              className="w-full p-4 bg-grey-200 dark:bg-grey-700 hover:bg-grey-300 dark:hover:bg-grey-600 rounded-t-lg flex justify-between items-center text-left"
               aria-expanded={showBarcodeGeneratorUI}
               aria-controls="barcode-generator-content"
             >
               <div className="flex items-center space-x-2">
-                <BarcodeIcon className="text-[#0A2F5C] dark:text-[#13B5CF]" />
+                <BarcodeIcon className="text-brand-navy dark:text-dark-brand-navy" />
                 <h2 id="barcode-generator-heading" className="text-xl font-semibold">
                   Generate Barcode Image
                 </h2>
@@ -772,19 +772,19 @@ const App: React.FC = () => {
               <ChevronIcon isOpen={showBarcodeGeneratorUI} />
             </button>
             {showBarcodeGeneratorUI && (
-              <div id="barcode-generator-content" className="p-6 bg-white dark:bg-[#1E293B] rounded-b-lg border-t border-[#DDE3ED] dark:border-[#334155]">
-                <div className="mb-6 flex space-x-1 border-b border-[#DDE3ED] dark:border-[#334155]">
+              <div id="barcode-generator-content" className="p-6 bg-bg-secondary dark:bg-dark-bg-primary rounded-b-lg border-t border-border-color dark:border-dark-border-color">
+                <div className="mb-6 flex space-x-1 border-b border-border-color dark:border-dark-border-color">
                   <Button
                     variant={selectedCustomBarcodeType === 'isbn' ? 'primary' : 'outline'}
                     onClick={() => setSelectedCustomBarcodeType('isbn')}
-                    className={`flex-1 rounded-b-none py-2 px-3 text-sm sm:text-base ${selectedCustomBarcodeType === 'isbn' ? 'border-b-transparent -mb-px !bg-[#0A2F5C] dark:!bg-[#13B5CF] !text-white dark:!text-[#0F172A]' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600'}`}
+                    className={`flex-1 rounded-b-none py-2 px-3 text-sm sm:text-base ${selectedCustomBarcodeType === 'isbn' ? 'border-b-transparent -mb-px !bg-brand-navy dark:!bg-brand-orange !text-white dark:!text-dark-text-primary' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600'}`}
                   >
                     ISBN Barcode
                   </Button>
                   <Button
                     variant={selectedCustomBarcodeType === 'datamatrix' ? 'primary' : 'outline'}
                     onClick={() => setSelectedCustomBarcodeType('datamatrix')}
-                    className={`flex-1 rounded-b-none py-2 px-3 text-sm sm:text-base ${selectedCustomBarcodeType === 'datamatrix' ? 'border-b-transparent -mb-px !bg-[#0A2F5C] dark:!bg-[#13B5CF] !text-white dark:!text-[#0F172A]' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600'}`}
+                    className={`flex-1 rounded-b-none py-2 px-3 text-sm sm:text-base ${selectedCustomBarcodeType === 'datamatrix' ? 'border-b-transparent -mb-px !bg-brand-navy dark:!bg-brand-orange !text-white dark:!text-dark-text-primary' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600'}`}
                   >
                     Data Matrix
                   </Button>
@@ -811,8 +811,8 @@ const App: React.FC = () => {
                       />
                       {isbnBarcodeError && <p className="text-red-500 text-sm mt-1">{isbnBarcodeError}</p>}
                     </div>
-                    <div className="mt-6 pt-6 border-t border-[#DDE3ED] dark:border-[#334155]">
-                      <div className="p-4 border border-[#A8B8D0] dark:border-[#334155] bg-[#F8FAFC] dark:bg-[#0F172A] rounded-md min-h-[150px] flex items-center justify-center mb-4">
+                    <div className="mt-6 pt-6 border-t border-border-color dark:border-dark-border-color">
+                      <div className="p-4 border border-grey-300 dark:border-dark-border-color bg-bg-tertiary dark:bg-dark-bg-secondary rounded-md min-h-[150px] flex items-center justify-center mb-4">
                         {combinedIsbnPricePreviewUrl ? (
                           <img
                             src={combinedIsbnPricePreviewUrl}
@@ -861,8 +861,8 @@ const App: React.FC = () => {
                       />
                       {dataMatrixError && <p className="text-red-500 text-sm mt-1">{dataMatrixError}</p>}
                     </div>
-                    <div className="mt-6 pt-6 border-t border-[#DDE3ED] dark:border-[#334155]">
-                      <div className="p-4 border border-[#A8B8D0] dark:border-[#334155] rounded-md bg-[#F8FAFC] dark:bg-[#0F172A] min-h-[150px] flex flex-col items-center justify-center mb-4 space-y-2">
+                    <div className="mt-6 pt-6 border-t border-border-color dark:border-dark-border-color">
+                      <div className="p-4 border border-grey-300 dark:border-dark-border-color rounded-md bg-bg-tertiary dark:bg-dark-bg-secondary min-h-[150px] flex flex-col items-center justify-center mb-4 space-y-2">
                         {dataMatrixImageDataUrl ? (
                           <>
                             <img src={dataMatrixImageDataUrl} alt="Data Matrix Barcode" className="max-w-[150px] max-h-[150px] object-contain" />
@@ -902,10 +902,10 @@ const App: React.FC = () => {
             )}
           </div>
 
-          <div className="bg-white dark:bg-[#1E293B] p-0 shadow-lg rounded-lg border border-[#DDE3ED] dark:border-[#334155]" aria-labelledby="book-spec-summary-heading">
+          <div className="bg-bg-secondary dark:bg-dark-bg-primary p-0 shadow-lg rounded-lg border border-border-color dark:border-dark-border-color" aria-labelledby="book-spec-summary-heading">
             <button
               onClick={() => setShowBookSpecAndSummary(!showBookSpecAndSummary)}
-              className="w-full p-4 bg-[#F8FAFC] dark:bg-[#1E293B] hover:bg-[#DDE3ED] dark:hover:bg-[#334155] rounded-t-lg flex justify-between items-center text-left"
+              className="w-full p-4 bg-bg-tertiary dark:bg-dark-bg-primary hover:bg-grey-200 dark:hover:bg-grey-700 rounded-t-lg flex justify-between items-center text-left"
               aria-expanded={showBookSpecAndSummary}
               aria-controls="book-spec-summary-content"
             >
@@ -915,8 +915,8 @@ const App: React.FC = () => {
               <ChevronIcon isOpen={showBookSpecAndSummary} />
             </button>
             {showBookSpecAndSummary && (
-              <div id="book-spec-summary-content" className="p-6 bg-white dark:bg-[#1E293B] rounded-b-lg border-t border-[#DDE3ED] dark:border-[#334155]">
-                <h3 className="text-lg font-medium mb-4 border-b border-[#DDE3ED] dark:border-[#334155] pb-2">
+              <div id="book-spec-summary-content" className="p-6 bg-bg-secondary dark:bg-dark-bg-primary rounded-b-lg border-t border-border-color dark:border-dark-border-color">
+                <h3 className="text-lg font-medium mb-4 border-b border-border-color dark:border-dark-border-color pb-2">
                   1. Book Specifications
                 </h3>
                 <form onSubmit={handleTemplateFormSubmit} className="space-y-5">
@@ -944,12 +944,12 @@ const App: React.FC = () => {
                 </form>
 
                 {calculatedDimensions && (
-                  <div className="mt-8 pt-6 border-t border-[#DDE3ED] dark:border-[#334155]">
+                  <div className="mt-8 pt-6 border-t border-border-color dark:border-dark-border-color">
                     <div className="flex justify-between items-center mb-2">
                       <h3 className="text-lg font-medium">Book Summary:</h3>
                       <Button onClick={copySummaryToClipboard} variant="outline" size="sm" leftIcon={summaryCopied ? <CheckIcon className="w-4 h-4 text-green-500" /> : <ClipboardIcon className="w-4 h-4" />}> {summaryCopied ? 'Copied!' : 'Copy'} </Button>
                     </div>
-                    <div className="text-sm bg-[#F8FAFC] dark:bg-[#0F172A] p-4 rounded-md overflow-x-auto custom-scrollbar leading-normal">
+                    <div className="text-sm bg-bg-tertiary dark:bg-dark-bg-secondary p-4 rounded-md overflow-x-auto custom-scrollbar leading-normal">
                       {condensedSummaryLines.map((line, index) => ( <p key={index} className="whitespace-pre-wrap">{line.label} <strong className="font-semibold">{line.value}</strong></p> ))}
                       {showDownloadOptionsSet && (
                         <div className="mt-4 pt-4 border-t border-slate-300 dark:border-slate-700 space-y-4">
@@ -970,25 +970,25 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <section className="bg-white dark:bg-[#1E293B] p-6 shadow-lg rounded-lg border border-[#DDE3ED] dark:border-[#334155] lg:col-span-8" aria-labelledby="results-preview-heading">
-          <div className="flex justify-between items-center mb-6 border-b border-[#DDE3ED] dark:border-[#334155] pb-3">
+        <section className="bg-bg-secondary dark:bg-dark-bg-primary p-6 shadow-lg rounded-lg border border-border-color dark:border-dark-border-color lg:col-span-8" aria-labelledby="results-preview-heading">
+          <div className="flex justify-between items-center mb-6 border-b border-border-color dark:border-dark-border-color pb-3">
             <h2 id="results-preview-heading" className="text-2xl font-semibold"> {calculatedDimensions ? 'Previews & Setup Guides' : 'File Requirements'} </h2>
           </div>
           {calculatedDimensions ? (
             <div className="space-y-6">
-              <div className="border border-[#DDE3ED] dark:border-[#334155] rounded-lg">
-                <button onClick={() => togglePreviewSection('cover')} className="w-full p-3 bg-[#F8FAFC] dark:bg-[#1E293B] hover:bg-[#DDE3ED] dark:hover:bg-[#334155] rounded-t-lg flex justify-between items-center text-left font-medium" aria-expanded={activePreviewSection === 'cover'} aria-controls="cover-preview-content">
+              <div className="border border-border-color dark:border-dark-border-color rounded-lg">
+                <button onClick={() => togglePreviewSection('cover')} className="w-full p-3 bg-bg-tertiary dark:bg-dark-bg-primary hover:bg-grey-200 dark:hover:bg-grey-700 rounded-t-lg flex justify-between items-center text-left font-medium" aria-expanded={activePreviewSection === 'cover'} aria-controls="cover-preview-content">
                   <span>Cover Template Preview:</span>
                   <ChevronIcon isOpen={activePreviewSection === 'cover'} />
                 </button>
                 {activePreviewSection === 'cover' && (
-                  <div id="cover-preview-content" className="p-4 bg-white dark:bg-[#1E293B] rounded-b-lg border-t border-[#DDE3ED] dark:border-[#334155]">
+                  <div id="cover-preview-content" className="p-4 bg-bg-secondary dark:bg-dark-bg-primary rounded-b-lg border-t border-border-color dark:border-dark-border-color">
                     <div className="flex justify-end items-center mb-1">
                       <label htmlFor="showTechnicalGuidesToggle" className="flex items-center text-xs text-slate-500 dark:text-slate-400 cursor-pointer">
                         <input type="checkbox" id="showTechnicalGuidesToggle" checked={showTechnicalGuides} onChange={() => setShowTechnicalGuides(!showTechnicalGuides)} className="mr-1 h-3 w-3 rounded border-slate-300 dark:border-slate-600 text-blue-600 dark:text-cyan-400 focus:ring-blue-500 dark:focus:ring-cyan-500 dark:focus:ring-offset-slate-800" /> Show Technical Guides
                       </label>
                     </div>
-                    <div className="border border-[#DDE3ED] dark:border-[#334155] rounded p-2 bg-[#F8FAFC] dark:bg-[#0F172A] aspect-[1.414] md:aspect-[1.6] lg:aspect-[1.7] flex items-center justify-center">
+                    <div className="border border-border-color dark:border-dark-border-color rounded p-2 bg-bg-tertiary dark:bg-dark-bg-secondary aspect-[1.414] md:aspect-[1.6] lg:aspect-[1.7] flex items-center justify-center">
                       <TemplatePreview calculations={calculatedDimensions} showTechnicalGuides={showTechnicalGuides} />
                     </div>
                     {calculatedDimensions && currentLegendItems.length > 0 && (
@@ -1007,13 +1007,13 @@ const App: React.FC = () => {
                   </div>
                 )}
               </div>
-              <div className="border border-[#DDE3ED] dark:border-[#334155] rounded-lg">
-                <button onClick={() => togglePreviewSection('interior')} className="w-full p-3 bg-[#F8FAFC] dark:bg-[#1E293B] hover:bg-[#DDE3ED] dark:hover:bg-[#334155] rounded-t-lg flex justify-between items-center text-left font-medium" aria-expanded={activePreviewSection === 'interior'} aria-controls="interior-setup-content">
+              <div className="border border-grey-800 dark:border-dark-border-color rounded-lg">
+                <button onClick={() => togglePreviewSection('interior')} className="w-full p-3 bg-bg-tertiary dark:bg-dark-bg-primary hover:bg-grey-200 dark:hover:bg-grey-700 rounded-t-lg flex justify-between items-center text-left font-medium" aria-expanded={activePreviewSection === 'interior'} aria-controls="interior-setup-content">
                   <span>Interior Page Setup Guide</span>
                   <ChevronIcon isOpen={activePreviewSection === 'interior'} />
                 </button>
                 {activePreviewSection === 'interior' && calculatedDimensions && (
-                  <div id="interior-setup-content" className="p-0 bg-white dark:bg-[#1E293B] rounded-b-lg border-t border-[#DDE3ED] dark:border-[#334155]">
+                  <div id="interior-setup-content" className="p-0 bg-bg-secondary dark:bg-dark-bg-primary rounded-b-lg border-t border-border-color dark:border-dark-border-color">
                     <InteractiveInteriorSetup pageCount={calculatedDimensions.pageCountNum} trimWidth={calculatedDimensions.trimWidthNum} trimHeight={calculatedDimensions.trimHeightNum} />
                   </div>
                 )}
@@ -1021,40 +1021,15 @@ const App: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-6 py-6">
-              <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 dark:border-green-400 p-5 rounded-md mb-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="flex-shrink-0">
-                      <svg className="h-6 w-6 text-green-500 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-green-800 dark:text-green-300 mb-1">Ready with your files?</h3>
-                      <p className="text-sm text-green-700 dark:text-green-400">
-                        Upload your completed files using the link below
-                      </p>
-                    </div>
-                  </div>
-                  <Button
-                    onClick={() => window.open('https://acutrack.sharefile.com/share/getinfo/r06c53c1d5887453ba387d4691dc7b84b', '_blank')}
-                    variant="primary"
-                    size="sm"
-                    className="ml-4 !bg-green-600 hover:!bg-green-700 dark:!bg-green-500 dark:hover:!bg-green-600"
-                  >
-                    Upload Here
-                  </Button>
-                </div>
-              </div>
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-5 mb-6">
-                <h3 className="text-lg font-semibold text-[#0A2F5C] dark:text-[#13B5CF] mb-3">Required Files for Print Production</h3>
+                <h3 className="text-lg font-semibold text-brand-navy dark:text-dark-brand-navy mb-3">Required Files for Print Production</h3>
                 <p className="text-sm text-slate-700 dark:text-slate-300 mb-4">
                   For each print title, please provide the following:
                 </p>
                 <div className="space-y-4">
                   <div>
                     <p className="text-sm text-slate-700 dark:text-slate-300 mb-2">
-                      <strong className="font-semibold text-[#0A2F5C] dark:text-[#13B5CF]">1. Interior Book File (PDF)</strong>
+                      <strong className="font-semibold text-brand-navy dark:text-dark-brand-navy">1. Interior Book File (PDF)</strong>
                     </p>
                     <div className="text-sm text-slate-600 dark:text-slate-400 ml-4 space-y-1">
                       <p>The interior must be delivered as one complete PDF containing every page in the book—from the first page to the last—including all blank pages.</p>
@@ -1065,7 +1040,7 @@ const App: React.FC = () => {
                   </div>
                   <div>
                     <p className="text-sm text-slate-700 dark:text-slate-300 mb-2">
-                      <strong className="font-semibold text-[#0A2F5C] dark:text-[#13B5CF]">2. Full Cover File (PDF)</strong>
+                      <strong className="font-semibold text-brand-navy dark:text-dark-brand-navy">2. Full Cover File (PDF)</strong>
                     </p>
                     <p className="text-sm text-slate-600 dark:text-slate-400 ml-4">
                       The cover must be supplied as one combined PDF that includes the front cover, back cover, and spine. <strong className="font-semibold">A front cover alone is not sufficient</strong>—all design elements must be assembled in one final cover layout.
@@ -1073,21 +1048,56 @@ const App: React.FC = () => {
                   </div>
                   <div>
                     <p className="text-sm text-slate-700 dark:text-slate-300 mb-2">
-                      <strong className="font-semibold text-[#0A2F5C] dark:text-[#13B5CF]">3. ISBN & Barcode</strong>
+                      <strong className="font-semibold text-brand-navy dark:text-dark-brand-navy">3. ISBN & Barcode</strong>
                     </p>
                     <p className="text-sm text-slate-600 dark:text-slate-400 ml-4">
                       Each format of the book requires its own unique ISBN (e.g., paperback vs. hardcover). <strong className="font-semibold">Ensure the correct ISBN is applied to the cover design</strong> before submitting files for production.
                     </p>
                   </div>
+                  <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 dark:border-green-400 p-5 rounded-md mt-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="flex-shrink-0">
+                          <svg className="h-6 w-6 text-green-500 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-green-800 dark:text-green-300 mb-1">Ready with your files?</h3>
+                          <p className="text-sm text-green-700 dark:text-green-400">
+                            Upload your completed files using the link below
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        onClick={() => window.open('https://acutrack.sharefile.com/share/getinfo/r06c53c1d5887453ba387d4691dc7b84b', '_blank')}
+                        variant="primary"
+                        size="sm"
+                        className="ml-4 !bg-green-600 hover:!bg-green-700 dark:!bg-green-500 dark:hover:!bg-green-600"
+                      >
+                        Upload Here
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </div>
               <h2 className="text-2xl font-semibold mb-4">Important Checks</h2>
-              <div className="grid md:grid-cols-2">
+              
+              {/* Trim and Binding Tolerance - Highlighted */}
+              <div className="bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-400 dark:border-amber-500 p-4 rounded-md mb-6">
+                <h3 className="text-lg font-bold text-amber-700 dark:text-amber-300 mb-2">**Important: Trim and Binding Tolerance**</h3>
+                <div className="h-0.5 w-full bg-amber-400 dark:bg-amber-500 mb-3"></div>
+                <p className="text-sm text-amber-800 dark:text-amber-200">
+                  During trimming or binding, a shift of up to <strong className="font-semibold">1/16 inch (2 mm)</strong> may occur. This minor variation is within industry standards. While this tolerance is tight, it can still cause <strong className="font-semibold">text or images near the edge</strong> to be trimmed or make the spine appear slightly off-center.
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 border-t border-slate-200 dark:border-slate-700">
                 {/* Row 1: Total Document Size & Safety Margin */}
                 {/* Total Document Size - Left */}
                 <div className="md:border-r md:border-slate-200 dark:md:border-slate-700 md:pr-6 pb-6 mb-6 border-b border-slate-200 dark:border-slate-700 flex flex-col">
-                  <h3 className="text-lg font-bold text-[#0A2F5C] dark:text-[#13B5CF] mb-2">Total Document Size</h3>
-                  <div className="h-0.5 w-full bg-[#0A2F5C] dark:bg-[#13B5CF] mb-3"></div>
+                  <h3 className="text-lg font-bold text-brand-navy dark:text-dark-brand-navy mb-2">Total Document Size</h3>
+                  <div className="h-0.5 w-full bg-brand-navy dark:bg-brand-orange mb-3"></div>
                   <p className="text-sm text-slate-700 dark:text-slate-300 flex-grow">
                     Total Document Size indicates the overall dimensions of the entire file, encompassing both the <strong className="font-semibold">content area</strong> & any <strong className="font-semibold">bleed or margin</strong> & <strong className="font-semibold">Spine width</strong>.
                   </p>
@@ -1095,8 +1105,8 @@ const App: React.FC = () => {
 
                 {/* Safety Margin - Right */}
                 <div className="md:pl-6 pb-6 mb-6 border-b border-slate-200 dark:border-slate-700 flex flex-col">
-                  <h3 className="text-lg font-bold text-[#22C55E] mb-2">Safety Margin</h3>
-                  <div className="h-0.5 w-full bg-[#22C55E] mb-3"></div>
+                  <h3 className="text-lg font-bold text-system-success mb-2">Safety Margin</h3>
+                  <div className="h-0.5 w-full bg-system-success mb-3"></div>
                   <p className="text-sm text-slate-700 dark:text-slate-300 flex-grow">
                     The space between the trimmed edge and vital content (such as <strong className="font-semibold">text, images, and page numbers</strong>) is crucial to avoid unintentional cropping or cutting. Acutrack Suggests a <strong className="font-semibold">0.5 in margin</strong> for all files.
                   </p>
@@ -1105,8 +1115,8 @@ const App: React.FC = () => {
                 {/* Row 2: Bleed Area & Spine Area */}
                 {/* Bleed Area - Left */}
                 <div className="md:border-r md:border-slate-200 dark:md:border-slate-700 md:pr-6 flex flex-col">
-                  <h3 className="text-lg font-bold text-[#FF6B6B] mb-2">Bleed Area</h3>
-                  <div className="h-0.5 w-full bg-[#FF6B6B] mb-3"></div>
+                  <h3 className="text-lg font-bold text-system-error mb-2">Bleed Area</h3>
+                  <div className="h-0.5 w-full bg-system-error mb-3"></div>
                   <p className="text-sm text-slate-700 dark:text-slate-300 flex-grow">
                     To ensure a clean and smooth finish for books, pages are printed larger than the final size and then trimmed down. The excess paper that is trimmed away is referred to as <strong className="font-semibold">'bleed.'</strong> Acutrack mandates a <strong className="font-semibold">0.125 in bleed margin</strong> for all files.
                   </p>
@@ -1114,23 +1124,14 @@ const App: React.FC = () => {
 
                 {/* Spine Area - Right */}
                 <div className="md:pl-6 flex flex-col">
-                  <h3 className="text-lg font-bold text-[#9013FE] mb-2">Spine Area</h3>
-                  <div className="h-0.5 w-full bg-[#9013FE] mb-3"></div>
+                  <h3 className="text-lg font-bold text-brand-navy-600 mb-2">Spine Area</h3>
+                  <div className="h-0.5 w-full bg-brand-navy-600 mb-3"></div>
                   <p className="text-sm text-slate-700 dark:text-slate-300 flex-grow">
                     Spine width depends on <strong className="font-semibold">page count</strong>. Keep your spine text within the template's <strong className="font-semibold">safe spine area</strong>. Avoid full-width text, and note that Acutrack does not recommend spine text if the spine is under <strong className="font-semibold">0.125 inch</strong>.
                   </p>
                 </div>
               </div>
-
-              {/* Trim and Binding Tolerance - Highlighted */}
-              <div className="bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-400 dark:border-amber-500 p-4 rounded-md">
-                <h3 className="text-lg font-bold text-amber-700 dark:text-amber-300 mb-2">Trim and Binding Tolerance</h3>
-                <div className="h-0.5 w-full bg-amber-400 dark:bg-amber-500 mb-3"></div>
-                <p className="text-sm text-amber-800 dark:text-amber-200">
-                  During trimming or binding, a shift of up to <strong className="font-semibold">1/16 inch (2 mm)</strong> may occur. This minor variation is within industry standards. While this tolerance is tight, it can still cause <strong className="font-semibold">text or images near the edge</strong> to be trimmed or make the spine appear slightly off-center. <strong className="font-semibold">Design artwork accordingly</strong>.
-                </p>
-              </div>
-              <p className="text-center text-slate-500 dark:text-slate-400 pt-4 border-t border-[#DDE3ED] dark:border-[#334155]">
+              <p className="text-center text-slate-500 dark:text-slate-400 pt-4 border-t border-border-color dark:border-dark-border-color">
                 Complete the book specifications and click "Get your files" to see your previews and download links.
               </p>
             </div>
