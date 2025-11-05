@@ -985,7 +985,57 @@ const App: React.FC = () => {
               </div>
             </div>
           ) : (
-            <p className="text-center text-slate-500 dark:text-slate-400 py-10"> Complete the book specifications and click "Get your files" to see your previews and download links. </p>
+            <div className="space-y-6 py-6">
+              <div className="space-y-5">
+                {/* Total Document Size */}
+                <div>
+                  <h3 className="text-lg font-bold text-[#0A2F5C] dark:text-[#13B5CF] mb-2">Total Document Size</h3>
+                  <div className="h-0.5 w-full bg-[#0A2F5C] dark:bg-[#13B5CF] mb-3"></div>
+                  <p className="text-sm text-slate-700 dark:text-slate-300">
+                    Total Document Size indicates the overall dimensions of the entire file, encompassing both the <strong className="font-semibold">content area</strong> & any <strong className="font-semibold">bleed or margin</strong> & <strong className="font-semibold">Spine width</strong>.
+                  </p>
+                </div>
+
+                {/* Bleed Area */}
+                <div>
+                  <h3 className="text-lg font-bold text-[#FF6B6B] mb-2">Bleed Area</h3>
+                  <div className="h-0.5 w-full bg-[#FF6B6B] mb-3"></div>
+                  <p className="text-sm text-slate-700 dark:text-slate-300">
+                    To ensure a clean and smooth finish for books, pages are printed larger than the final size and then trimmed down. The excess paper that is trimmed away is referred to as <strong className="font-semibold">'bleed.'</strong> Acutrack mandates a <strong className="font-semibold">0.125 in bleed margin</strong> for all files.
+                  </p>
+                </div>
+
+                {/* Safety Margin */}
+                <div>
+                  <h3 className="text-lg font-bold text-[#22C55E] mb-2">Safety Margin</h3>
+                  <div className="h-0.5 w-full bg-[#22C55E] mb-3"></div>
+                  <p className="text-sm text-slate-700 dark:text-slate-300">
+                    The space between the trimmed edge and vital content (such as <strong className="font-semibold">text, images, and page numbers</strong>) is crucial to avoid unintentional cropping or cutting. Acutrack Suggests a <strong className="font-semibold">0.5 in margin</strong> for all files.
+                  </p>
+                </div>
+
+                {/* Spine Area */}
+                <div>
+                  <h3 className="text-lg font-bold text-[#9013FE] mb-2">Spine Area</h3>
+                  <div className="h-0.5 w-full bg-[#9013FE] mb-3"></div>
+                  <p className="text-sm text-slate-700 dark:text-slate-300">
+                    The spine width varies as per the <strong className="font-semibold">number of pages</strong> in your book. Keep your spine text inside the suggested spine width by the template. Avoid incorporating text that spans the entire width of the spine, Acutrack does not recommend text on spine width less than <strong className="font-semibold">0.125"</strong>.
+                  </p>
+                </div>
+
+                {/* Trim and Binding Tolerance - Highlighted */}
+                <div className="bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-400 dark:border-amber-500 p-4 rounded-md">
+                  <h3 className="text-lg font-bold text-amber-700 dark:text-amber-300 mb-2">Trim and Binding Tolerance</h3>
+                  <div className="h-0.5 w-full bg-amber-400 dark:bg-amber-500 mb-3"></div>
+                  <p className="text-sm text-amber-800 dark:text-amber-200">
+                    During trimming or binding, a shift of up to <strong className="font-semibold">1/16 inch (2 mm)</strong> may occur. This minor variation is within industry standards. While this tolerance is tight, it can still cause <strong className="font-semibold">text or images near the edge</strong> to be trimmed or make the spine appear slightly off-center. <strong className="font-semibold">Design artwork accordingly</strong>.
+                  </p>
+                </div>
+              </div>
+              <p className="text-center text-slate-500 dark:text-slate-400 pt-4 border-t border-[#DDE3ED] dark:border-[#334155]">
+                Complete the book specifications and click "Get your files" to see your previews and download links.
+              </p>
+            </div>
           )}
         </section>
       </div>
