@@ -29,8 +29,8 @@ import ZipFileIcon from './components/ZipFileIcon';
 import ChevronIcon from './components/ChevronIcon';
 import BarcodeIcon from './components/BarcodeIcon';
 import { ThemeToggleButton, useTheme } from './components/ThemeSwitcher';
-import logoLight from './assets/acutrack-logo-light.svg';
-import logoDark from './assets/acutrack-logo-dark.svg';
+import logoLight from './Assets/acutrack-logo-light.svg';
+import logoDark from './Assets/acutrack-logo-dark.svg';
 
 // Helper function to calculate EAN-13 check digit
 const calculateEAN13CheckDigit = (isbnWithoutCheck: string): number => {
@@ -91,7 +91,7 @@ const App: React.FC = () => {
     const updateFavicon = () => {
       const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       if (faviconSvgLink) {
-        faviconSvgLink.href = isSystemDark ? '/src/assets/favicon-dark.svg' : '/src/assets/favicon.svg';
+        faviconSvgLink.href = isSystemDark ? '/src/Assets/favicon-dark.svg' : '/src/Assets/favicon.svg';
       }
     };
     
