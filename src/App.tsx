@@ -28,9 +28,11 @@ import { ClipboardIcon } from './components/ClipboardIcons';
 import ZipFileIcon from './components/ZipFileIcon';
 import ChevronIcon from './components/ChevronIcon';
 import BarcodeIcon from './components/BarcodeIcon';
+import PdfFileIcon from './components/PdfFileIcon';
 import { ThemeToggleButton, useTheme } from './components/ThemeSwitcher';
 import logoLight from './Assets/acutrack-logo-light.svg';
 import logoDark from './Assets/acutrack-logo-dark.svg';
+import printRequirementsPdf from './Assets/Print-requirements.pdf';
 
 // Helper function to calculate EAN-13 check digit
 const calculateEAN13CheckDigit = (isbnWithoutCheck: string): number => {
@@ -698,6 +700,16 @@ const App: React.FC = () => {
   const bindingTypeOptionsForSelect = [{ value: '', label: "Select Binding Type" }, ...Object.values(BindingType).map(bt => ({ value: bt, label: bt }))];
   const condensedSummaryLines = useMemo(() => getCondensedSummaryLines(calculatedDimensions), [calculatedDimensions]);
   const legendColorMapping = { bleed: '#ba4335', wrap: '#ba4335', trim: '#3266d4', safety: '#23C27D', spine: '#274983', hinge: '#f3c94f', board: '#6B7280', };
+  
+  // Handler to download the Print Requirements PDF
+  const handleDownloadPrintRequirementsPDF = () => {
+    const link = document.createElement('a');
+    link.href = printRequirementsPdf;
+    link.download = 'Acutrack-Print-Requirements.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   const currentLegendItems = useMemo(() => {
     if (!calculatedDimensions) return [];
     const items: { label: string, color: string, type: 'line' | 'line-dashed' | 'box' }[] = [];
@@ -973,6 +985,17 @@ const App: React.FC = () => {
         <section className="bg-bg-secondary dark:bg-dark-bg-primary p-6 shadow-lg rounded-lg border border-border-color dark:border-dark-border-color lg:col-span-8" aria-labelledby="results-preview-heading">
           <div className="flex justify-between items-center mb-6 border-b border-border-color dark:border-dark-border-color pb-3">
             <h2 id="results-preview-heading" className="text-2xl font-semibold"> {calculatedDimensions ? 'Previews & Setup Guides' : 'File Requirements'} </h2>
+            {!calculatedDimensions && (
+              <Button
+                onClick={handleDownloadPrintRequirementsPDF}
+                variant="outline"
+                size="sm"
+                leftIcon={<PdfFileIcon />}
+                className="flex items-center"
+              >
+                Download PDF
+              </Button>
+            )}
           </div>
           {calculatedDimensions ? (
             <div className="space-y-6">
