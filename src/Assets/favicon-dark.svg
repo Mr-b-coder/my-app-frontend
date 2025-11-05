@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 247.58 127.88">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-1, .cls-2 {
+        fill-rule: evenodd;
+      }
+
+      .cls-2 {
+        fill: #22bec9;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g>
+      <path id="Path_1" data-name="Path 1" class="cls-1" d="M177.89,10.05l1.72-4.58c.21.32.37.68.45,1.06l44.1,121.32h23.41L201.16,0h-30.97l-.98,2.72-43.44,115.42H0v9.74h133.7L177.89,10.12v-.07Z"/>
+      <g id="Group_1" data-name="Group 1">
+        <path id="Path_2" data-name="Path 2" class="cls-2" d="M162.33,1.74c-31.22,30.04-45.03,73.89-36.66,116.4,2.51-41.22,15.1-81.19,36.66-116.4Z"/>
+        <path id="Path_3" data-name="Path 3" class="cls-2" d="M127.05,0c-20.55,36.6-21.07,81.15-1.36,118.22-9.18-38.93-8.72-79.51,1.36-118.22Z"/>
+        <path id="Path_4" data-name="Path 4" class="cls-2" d="M94.28,5.59c-9.36,40.42,2.48,82.83,31.42,112.55-19.5-34.39-30.28-73.03-31.42-112.55Z"/>
+        <path id="Path_5" data-name="Path 5" class="cls-2" d="M60.2,19.79c3.69,41.8,28.36,78.87,65.49,98.43-29.55-26.96-52.04-60.76-65.49-98.43Z"/>
+        <path id="Path_6" data-name="Path 6" class="cls-2" d="M32.71,39.13c15.5,40.48,50.55,70.28,92.99,79.09-36.99-18.37-68.91-45.53-92.99-79.09Z"/>
+        <path id="Path_7" data-name="Path 7" class="cls-2" d="M9.97,63c26.69,36.85,70.26,57.65,115.7,55.22-42.5-8.68-82.22-27.64-115.7-55.22Z"/>
+      </g>
+    </g>
+  </g>
+</svg>

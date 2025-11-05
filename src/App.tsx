@@ -28,7 +28,9 @@ import { ClipboardIcon } from './components/ClipboardIcons';
 import ZipFileIcon from './components/ZipFileIcon';
 import ChevronIcon from './components/ChevronIcon';
 import BarcodeIcon from './components/BarcodeIcon';
-import { ThemeToggleButton } from './components/ThemeSwitcher';
+import { ThemeToggleButton, useTheme } from './components/ThemeSwitcher';
+import logoLight from './assets/acutrack-logo-light.svg';
+import logoDark from './assets/acutrack-logo-dark.svg';
 
 // Helper function to calculate EAN-13 check digit
 const calculateEAN13CheckDigit = (isbnWithoutCheck: string): number => {
@@ -80,6 +82,31 @@ const getCondensedSummaryLines = (calculations: CoverCalculations | null): Summa
 
 
 const App: React.FC = () => {
+  const { effectiveTheme } = useTheme();
+  
+  // Update favicon based on browser system theme (not website theme)
+  useEffect(() => {
+    const faviconSvgLink = document.getElementById('favicon-svg') as HTMLLinkElement;
+    
+    const updateFavicon = () => {
+      const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (faviconSvgLink) {
+        faviconSvgLink.href = isSystemDark ? '/src/assets/favicon-dark.svg' : '/src/assets/favicon.svg';
+      }
+    };
+    
+    // Set initial favicon
+    updateFavicon();
+    
+    // Listen for browser theme changes
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    mediaQuery.addEventListener('change', updateFavicon);
+    
+    return () => {
+      mediaQuery.removeEventListener('change', updateFavicon);
+    };
+  }, []);
+
   const [formData, setFormData] = useState<BookCoverFormData>({
     bookTitle: '',
     pageCount: '',
@@ -692,7 +719,13 @@ const App: React.FC = () => {
     <div className="container mx-auto p-4 md:p-6 lg:p-8 flex flex-col min-h-screen">
       <header className="mb-6 md:mb-8">
         <div className="flex justify-between items-center">
-          <div className="text-2xl md:text-3xl font-bold">Acutrack</div>
+          <div className="flex items-center">
+            <img 
+              src={effectiveTheme === 'dark' ? logoDark : logoLight}
+              alt="Acutrack Logo"
+              className="h-8 md:h-10 w-auto"
+            />
+          </div>
           <div className="flex items-center space-x-4">
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">Template Generator</h1>
             <ThemeToggleButton />

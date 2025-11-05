@@ -5,19 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Template Generator</title>
     
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/src/assets/favicon.svg" id="favicon-svg" />
+    <link rel="icon" type="image/x-icon" href="/src/assets/favicon.ico" />
+    <link rel="apple-touch-icon" href="/src/assets/apple-touch-icon.svg" />
+    
     <!-- V V V THIS IS THE MAGIC SCRIPT TO PREVENT FLICKERING V V V -->
     <script>
       (function() {
         try {
           const preference = localStorage.getItem('themePreference');
-          if (preference === 'dark') {
+          const isDark = preference === 'dark' || (preference !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          
+          if (isDark) {
             document.documentElement.classList.add('dark');
-          } else if (preference === 'light') {
+          } else {
             document.documentElement.classList.remove('dark');
-          } else { // 'system' or null
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-              document.documentElement.classList.add('dark');
-            }
+          }
+          
+          // Set favicon based on browser system theme (not website theme)
+          const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const faviconSvg = document.getElementById('favicon-svg');
+          if (faviconSvg) {
+            faviconSvg.href = isSystemDark ? '/src/assets/favicon-dark.svg' : '/src/assets/favicon.svg';
           }
         } catch (e) {
           // In case of any error, do nothing and let React handle it.
