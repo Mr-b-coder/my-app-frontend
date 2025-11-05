@@ -688,6 +688,157 @@ const App: React.FC = () => {
   }, [calculatedDimensions, legendColorMapping]);
   const togglePreviewSection = (section: 'cover' | 'interior') => { setActivePreviewSection(prev => (prev === section ? null : section)); };
 
+  const handleDownloadFileRequirementsPDF = () => {
+    const pdf = new jsPDF();
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 15;
+    const maxWidth = pageWidth - (margin * 2);
+    let yPosition = margin;
+
+    // Helper function to add text with proper alignment
+    const addText = (text: string, fontSize: number, isBold: boolean = false, color: [number, number, number] = [0, 0, 0], xOffset: number = 0) => {
+      pdf.setFontSize(fontSize);
+      pdf.setTextColor(color[0], color[1], color[2]);
+      if (isBold) {
+        pdf.setFont('helvetica', 'bold');
+      } else {
+        pdf.setFont('helvetica', 'normal');
+      }
+      
+      const lines = pdf.splitTextToSize(text, maxWidth - xOffset);
+      const lineHeight = fontSize * 0.35; // Tighter line height for better spacing
+      
+      lines.forEach((line: string) => {
+        if (yPosition > pageHeight - margin - 10) {
+          pdf.addPage();
+          yPosition = margin;
+        }
+        // Ensure consistent X alignment
+        pdf.text(line, margin + xOffset, yPosition);
+        yPosition += lineHeight;
+      });
+      return lines.length * lineHeight;
+    };
+
+    // Helper function to draw colored line
+    const drawColoredLine = (color: [number, number, number], width: number = maxWidth) => {
+      pdf.setDrawColor(color[0], color[1], color[2]);
+      pdf.setLineWidth(0.5);
+      pdf.line(margin, yPosition, margin + width, yPosition);
+      yPosition += 2;
+    };
+
+    // Helper function to draw box behind content
+    const drawBoxBehind = (startY: number, endY: number, bgColor: [number, number, number], borderColor: [number, number, number]) => {
+      const height = endY - startY + 8;
+      pdf.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
+      pdf.setDrawColor(borderColor[0], borderColor[1], borderColor[2]);
+      pdf.roundedRect(margin, startY - 4, maxWidth, height, 2, 2, 'FD');
+    };
+
+    // Title
+    pdf.setFontSize(16);
+    pdf.setTextColor(10, 47, 92);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('File Requirements', margin, yPosition);
+    yPosition += 10;
+
+    // Required Files Section
+    const requiredFilesStartY = yPosition;
+    
+    pdf.setFontSize(12);
+    pdf.setTextColor(10, 47, 92);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Required Files for Print Production', margin, yPosition);
+    yPosition += 6;
+
+    addText('For each print title, please provide the following:', 8.5, false, [0, 0, 0]);
+    yPosition += 1.5;
+    
+    addText('1. Interior Book File (PDF)', 9.5, true, [10, 47, 92]);
+    yPosition += 0.5;
+    addText('The interior must be delivered as one complete PDF containing every page in the book—from the first page to the last—including all blank pages. Do not submit separate chapter PDFs. Export in single-page (1-up) format. Do not include crop marks, registration marks, or printer marks.', 8.5, false, [0, 0, 0], 8);
+    yPosition += 1.5;
+
+    addText('2. Full Cover File (PDF)', 9.5, true, [10, 47, 92]);
+    yPosition += 0.5;
+    addText('The cover must be supplied as one combined PDF that includes the front cover, back cover, and spine. A front cover alone is not sufficient—all design elements must be assembled in one final cover layout.', 8.5, false, [0, 0, 0], 8);
+    yPosition += 1.5;
+
+    addText('3. ISBN & Barcode', 9.5, true, [10, 47, 92]);
+    yPosition += 0.5;
+    addText('Each format of the book requires its own unique ISBN (e.g., paperback vs. hardcover). Ensure the correct ISBN is applied to the cover design before submitting files for production.', 8.5, false, [0, 0, 0], 8);
+    
+    const requiredFilesEndY = yPosition;
+    // Draw box - will be on top but light colored
+    drawBoxBehind(requiredFilesStartY, requiredFilesEndY, [240, 248, 255], [200, 220, 240]);
+    yPosition += 8;
+
+    // Important Checks Section
+    pdf.setFontSize(14);
+    pdf.setTextColor(0, 0, 0);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Important Checks', margin, yPosition);
+    yPosition += 8;
+
+    // Total Document Size
+    pdf.setFontSize(10);
+    pdf.setTextColor(10, 47, 92);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Total Document Size', margin, yPosition);
+    yPosition += 1.5;
+    drawColoredLine([10, 47, 92]);
+    addText('Total Document Size indicates the overall dimensions of the entire file, encompassing both the content area & any bleed or margin & Spine width.', 8.5, false, [0, 0, 0]);
+    yPosition += 2;
+
+    // Bleed Area
+    pdf.setFontSize(10);
+    pdf.setTextColor(255, 107, 107);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Bleed Area', margin, yPosition);
+    yPosition += 1.5;
+    drawColoredLine([255, 107, 107]);
+    addText("To ensure a clean and smooth finish for books, pages are printed larger than the final size and then trimmed down. The excess paper that is trimmed away is referred to as 'bleed.' Acutrack mandates a 0.125 in bleed margin for all files.", 8.5, false, [0, 0, 0]);
+    yPosition += 2;
+
+    // Safety Margin
+    pdf.setFontSize(10);
+    pdf.setTextColor(34, 197, 94);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Safety Margin', margin, yPosition);
+    yPosition += 1.5;
+    drawColoredLine([34, 197, 94]);
+    addText('The space between the trimmed edge and vital content (such as text, images, and page numbers) is crucial to avoid unintentional cropping or cutting. Acutrack Suggests a 0.5 in margin for all files.', 8.5, false, [0, 0, 0]);
+    yPosition += 2;
+
+    // Spine Area
+    pdf.setFontSize(10);
+    pdf.setTextColor(144, 19, 254);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Spine Area', margin, yPosition);
+    yPosition += 1.5;
+    drawColoredLine([144, 19, 254]);
+    addText("Spine width depends on page count. Keep your spine text within the template's safe spine area. Avoid full-width text, and note that Acutrack does not recommend spine text if the spine is under 0.125 inch.", 8.5, false, [0, 0, 0]);
+    yPosition += 4;
+
+    // Trim and Binding Tolerance - Highlighted box
+    const toleranceStartY = yPosition;
+    pdf.setFontSize(10);
+    pdf.setTextColor(217, 119, 6);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Trim and Binding Tolerance', margin, yPosition);
+    yPosition += 1.5;
+    drawColoredLine([251, 191, 36]);
+    addText('During trimming or binding, a shift of up to 1/16 inch (2 mm) may occur. This minor variation is within industry standards. While this tolerance is tight, it can still cause text or images near the edge to be trimmed or make the spine appear slightly off-center. Design artwork accordingly.', 8.5, false, [0, 0, 0]);
+    
+    const toleranceEndY = yPosition;
+    // Draw box behind content
+    drawBoxBehind(toleranceStartY, toleranceEndY, [255, 251, 235], [251, 191, 36]);
+
+    pdf.save('Acutrack-File-Requirements.pdf');
+  };
+
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8 flex flex-col min-h-screen">
       <header className="mb-6 md:mb-8">
@@ -938,7 +1089,9 @@ const App: React.FC = () => {
         </div>
 
         <section className="bg-white dark:bg-[#1E293B] p-6 shadow-lg rounded-lg border border-[#DDE3ED] dark:border-[#334155] lg:col-span-8" aria-labelledby="results-preview-heading">
-          <h2 id="results-preview-heading" className="text-2xl font-semibold mb-6 border-b border-[#DDE3ED] dark:border-[#334155] pb-3"> Previews & Setup Guides </h2>
+          <div className="flex justify-between items-center mb-6 border-b border-[#DDE3ED] dark:border-[#334155] pb-3">
+            <h2 id="results-preview-heading" className="text-2xl font-semibold"> {calculatedDimensions ? 'Previews & Setup Guides' : 'File Requirements'} </h2>
+          </div>
           {calculatedDimensions ? (
             <div className="space-y-6">
               <div className="border border-[#DDE3ED] dark:border-[#334155] rounded-lg">
@@ -986,51 +1139,114 @@ const App: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-6 py-6">
-              <div className="space-y-5">
-                {/* Total Document Size */}
-                <div>
+              <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 dark:border-green-400 p-5 rounded-md mb-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0">
+                      <svg className="h-6 w-6 text-green-500 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-green-800 dark:text-green-300 mb-1">Ready with your files?</h3>
+                      <p className="text-sm text-green-700 dark:text-green-400">
+                        Upload your completed files using the link below
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => window.open('https://acutrack.sharefile.com/share/getinfo/r06c53c1d5887453ba387d4691dc7b84b', '_blank')}
+                    variant="primary"
+                    size="sm"
+                    className="ml-4 !bg-green-600 hover:!bg-green-700 dark:!bg-green-500 dark:hover:!bg-green-600"
+                  >
+                    Upload Here
+                  </Button>
+                </div>
+              </div>
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-5 mb-6">
+                <h3 className="text-lg font-semibold text-[#0A2F5C] dark:text-[#13B5CF] mb-3">Required Files for Print Production</h3>
+                <p className="text-sm text-slate-700 dark:text-slate-300 mb-4">
+                  For each print title, please provide the following:
+                </p>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-sm text-slate-700 dark:text-slate-300 mb-2">
+                      <strong className="font-semibold text-[#0A2F5C] dark:text-[#13B5CF]">1. Interior Book File (PDF)</strong>
+                    </p>
+                    <div className="text-sm text-slate-600 dark:text-slate-400 ml-4 space-y-1">
+                      <p>The interior must be delivered as one complete PDF containing every page in the book—from the first page to the last—including all blank pages.</p>
+                      <p><strong className="font-semibold">Do not submit separate chapter PDFs.</strong></p>
+                      <p>Export in <strong className="font-semibold">single-page (1-up) format</strong>.</p>
+                      <p><strong className="font-semibold">Do not include crop marks, registration marks, or printer marks.</strong></p>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-700 dark:text-slate-300 mb-2">
+                      <strong className="font-semibold text-[#0A2F5C] dark:text-[#13B5CF]">2. Full Cover File (PDF)</strong>
+                    </p>
+                    <p className="text-sm text-slate-600 dark:text-slate-400 ml-4">
+                      The cover must be supplied as one combined PDF that includes the front cover, back cover, and spine. <strong className="font-semibold">A front cover alone is not sufficient</strong>—all design elements must be assembled in one final cover layout.
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-700 dark:text-slate-300 mb-2">
+                      <strong className="font-semibold text-[#0A2F5C] dark:text-[#13B5CF]">3. ISBN & Barcode</strong>
+                    </p>
+                    <p className="text-sm text-slate-600 dark:text-slate-400 ml-4">
+                      Each format of the book requires its own unique ISBN (e.g., paperback vs. hardcover). <strong className="font-semibold">Ensure the correct ISBN is applied to the cover design</strong> before submitting files for production.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <h2 className="text-2xl font-semibold mb-4">Important Checks</h2>
+              <div className="grid md:grid-cols-2">
+                {/* Row 1: Total Document Size & Safety Margin */}
+                {/* Total Document Size - Left */}
+                <div className="md:border-r md:border-slate-200 dark:md:border-slate-700 md:pr-6 pb-6 mb-6 border-b border-slate-200 dark:border-slate-700 flex flex-col">
                   <h3 className="text-lg font-bold text-[#0A2F5C] dark:text-[#13B5CF] mb-2">Total Document Size</h3>
                   <div className="h-0.5 w-full bg-[#0A2F5C] dark:bg-[#13B5CF] mb-3"></div>
-                  <p className="text-sm text-slate-700 dark:text-slate-300">
+                  <p className="text-sm text-slate-700 dark:text-slate-300 flex-grow">
                     Total Document Size indicates the overall dimensions of the entire file, encompassing both the <strong className="font-semibold">content area</strong> & any <strong className="font-semibold">bleed or margin</strong> & <strong className="font-semibold">Spine width</strong>.
                   </p>
                 </div>
 
-                {/* Bleed Area */}
-                <div>
-                  <h3 className="text-lg font-bold text-[#FF6B6B] mb-2">Bleed Area</h3>
-                  <div className="h-0.5 w-full bg-[#FF6B6B] mb-3"></div>
-                  <p className="text-sm text-slate-700 dark:text-slate-300">
-                    To ensure a clean and smooth finish for books, pages are printed larger than the final size and then trimmed down. The excess paper that is trimmed away is referred to as <strong className="font-semibold">'bleed.'</strong> Acutrack mandates a <strong className="font-semibold">0.125 in bleed margin</strong> for all files.
-                  </p>
-                </div>
-
-                {/* Safety Margin */}
-                <div>
+                {/* Safety Margin - Right */}
+                <div className="md:pl-6 pb-6 mb-6 border-b border-slate-200 dark:border-slate-700 flex flex-col">
                   <h3 className="text-lg font-bold text-[#22C55E] mb-2">Safety Margin</h3>
                   <div className="h-0.5 w-full bg-[#22C55E] mb-3"></div>
-                  <p className="text-sm text-slate-700 dark:text-slate-300">
+                  <p className="text-sm text-slate-700 dark:text-slate-300 flex-grow">
                     The space between the trimmed edge and vital content (such as <strong className="font-semibold">text, images, and page numbers</strong>) is crucial to avoid unintentional cropping or cutting. Acutrack Suggests a <strong className="font-semibold">0.5 in margin</strong> for all files.
                   </p>
                 </div>
 
-                {/* Spine Area */}
-                <div>
-                  <h3 className="text-lg font-bold text-[#9013FE] mb-2">Spine Area</h3>
-                  <div className="h-0.5 w-full bg-[#9013FE] mb-3"></div>
-                  <p className="text-sm text-slate-700 dark:text-slate-300">
-                    The spine width varies as per the <strong className="font-semibold">number of pages</strong> in your book. Keep your spine text inside the suggested spine width by the template. Avoid incorporating text that spans the entire width of the spine, Acutrack does not recommend text on spine width less than <strong className="font-semibold">0.125"</strong>.
+                {/* Row 2: Bleed Area & Spine Area */}
+                {/* Bleed Area - Left */}
+                <div className="md:border-r md:border-slate-200 dark:md:border-slate-700 md:pr-6 flex flex-col">
+                  <h3 className="text-lg font-bold text-[#FF6B6B] mb-2">Bleed Area</h3>
+                  <div className="h-0.5 w-full bg-[#FF6B6B] mb-3"></div>
+                  <p className="text-sm text-slate-700 dark:text-slate-300 flex-grow">
+                    To ensure a clean and smooth finish for books, pages are printed larger than the final size and then trimmed down. The excess paper that is trimmed away is referred to as <strong className="font-semibold">'bleed.'</strong> Acutrack mandates a <strong className="font-semibold">0.125 in bleed margin</strong> for all files.
                   </p>
                 </div>
 
-                {/* Trim and Binding Tolerance - Highlighted */}
-                <div className="bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-400 dark:border-amber-500 p-4 rounded-md">
-                  <h3 className="text-lg font-bold text-amber-700 dark:text-amber-300 mb-2">Trim and Binding Tolerance</h3>
-                  <div className="h-0.5 w-full bg-amber-400 dark:bg-amber-500 mb-3"></div>
-                  <p className="text-sm text-amber-800 dark:text-amber-200">
-                    During trimming or binding, a shift of up to <strong className="font-semibold">1/16 inch (2 mm)</strong> may occur. This minor variation is within industry standards. While this tolerance is tight, it can still cause <strong className="font-semibold">text or images near the edge</strong> to be trimmed or make the spine appear slightly off-center. <strong className="font-semibold">Design artwork accordingly</strong>.
+                {/* Spine Area - Right */}
+                <div className="md:pl-6 flex flex-col">
+                  <h3 className="text-lg font-bold text-[#9013FE] mb-2">Spine Area</h3>
+                  <div className="h-0.5 w-full bg-[#9013FE] mb-3"></div>
+                  <p className="text-sm text-slate-700 dark:text-slate-300 flex-grow">
+                    Spine width depends on <strong className="font-semibold">page count</strong>. Keep your spine text within the template's <strong className="font-semibold">safe spine area</strong>. Avoid full-width text, and note that Acutrack does not recommend spine text if the spine is under <strong className="font-semibold">0.125 inch</strong>.
                   </p>
                 </div>
+              </div>
+
+              {/* Trim and Binding Tolerance - Highlighted */}
+              <div className="bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-400 dark:border-amber-500 p-4 rounded-md">
+                <h3 className="text-lg font-bold text-amber-700 dark:text-amber-300 mb-2">Trim and Binding Tolerance</h3>
+                <div className="h-0.5 w-full bg-amber-400 dark:bg-amber-500 mb-3"></div>
+                <p className="text-sm text-amber-800 dark:text-amber-200">
+                  During trimming or binding, a shift of up to <strong className="font-semibold">1/16 inch (2 mm)</strong> may occur. This minor variation is within industry standards. While this tolerance is tight, it can still cause <strong className="font-semibold">text or images near the edge</strong> to be trimmed or make the spine appear slightly off-center. <strong className="font-semibold">Design artwork accordingly</strong>.
+                </p>
               </div>
               <p className="text-center text-slate-500 dark:text-slate-400 pt-4 border-t border-[#DDE3ED] dark:border-[#334155]">
                 Complete the book specifications and click "Get your files" to see your previews and download links.
