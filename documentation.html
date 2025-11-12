@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Template Generator - Documentation</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      line-height: 1.6;
+      color: #333;
+      background-color: #f8f9fa;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.05);
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.5em;
+      margin-bottom: 0.5em;
+      color: #212529;
+    }
+    h1 {
+      font-size: 2.5em;
+      border-bottom: 2px solid #dee2e6;
+      padding-bottom: 0.3em;
+    }
+    h2 {
+      font-size: 2em;
+      border-bottom: 1px solid #dee2e6;
+      padding-bottom: 0.2em;
+    }
+    h3 {
+      font-size: 1.5em;
+    }
+    h4 {
+      font-size: 1.2em;
+    }
+    p {
+      margin-bottom: 1em;
+    }
+    ul, ol {
+      margin-bottom: 1em;
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 0.4em;
+    }
+    ul ul, ol ol, ul ol, ol ul {
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+    }
+    pre {
+      background-color: #e9ecef;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      padding: 15px;
+      overflow-x: auto;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+      font-size: 0.9em;
+      margin-bottom: 1em;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+      font-size: 0.9em;
+    }
+    /* Inline code (not in pre) */
+    p code, li code, h1 code, h2 code, h3 code, h4 code, h5 code, h6 code {
+      background-color: #e9ecef;
+      padding: 0.2em 0.4em;
+      margin: 0;
+      font-size: 85%;
+      border-radius: 3px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1em;
+    }
+    th, td {
+      border: 1px solid #dee2e6;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f1f3f5;
+      font-weight: bold;
+    }
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    strong, b {
+      font-weight: bold;
+    }
+    em, i {
+      font-style: italic;
+    }
+    nav#table-of-contents ul {
+        list-style-type: decimal;
+        padding-left: 20px;
+    }
+    nav#table-of-contents ul li {
+        margin-bottom: 0.5em;
+    }
+    nav#table-of-contents ul li a {
+        color: #0056b3;
+    }
+    nav#table-of-contents ul li a:hover {
+        color: #003d80;
+    }
+  </style>
+</head>
+<body>
+  <h1>Book Template Generator</h1>
+  <p>A smart assistant for generating book cover and interior templates with dynamic calculations and barcode generation.</p>
+
+  <nav id="table-of-contents">
+    <h2>Table of Contents</h2>
+    <ul>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#tech-stack">Tech Stack</a></li>
+      <li><a href="#project-structure">Project Structure</a></li>
+      <li><a href="#prerequisites">Prerequisites</a></li>
+      <li><a href="#installation-setup">Installation & Setup</a></li>
+      <li><a href="#usage-running-the-app">Usage / Running the App</a></li>
+      <li><a href="#api-endpoints">API Endpoints</a></li>
+      <li><a href="#deployment">Deployment</a></li>
+      <li><a href="#contributing">Contributing</a></li>
+      <li><a href="#license">License</a></li>
+    </ul>
+  </nav>
+
+  <h2 id="overview">Overview</h2>
+  <p>The Book Template Generator is a comprehensive web application designed to assist authors, designers, and publishers in creating accurate print-ready templates for various types of books. It dynamically calculates critical dimensions such as spine width, full cover size (including bleed or wrap), safety margins, and hinge widths based on user inputs like page count, paper stock (PPI), trim size, and binding type.</p>
+  <p>The application supports:</p>
+  <ul>
+    <li><strong>Perfect Bind / Softcover</strong></li>
+    <li><strong>Case Bind / Hardcover</strong></li>
+    <li><strong>Coil / Wire-O - Softcover</strong></li>
+    <li><strong>Coil / Wire-O - Hardcover</strong></li>
+  </ul>
+  <p>Beyond cover templates, it provides an interactive interior page setup guide with recommended gutter margins and tools to generate interior document templates. A key feature is the integrated barcode generator, allowing users to create and download ISBN EAN-13+5 or Data Matrix ECC 200 barcodes for their book covers. The goal is to streamline the pre-press process, reduce errors, and empower users to generate professional-quality templates quickly.</p>
+
+  <h2 id="features">Features</h2>
+  <ul>
+    <li><strong>Dynamic Cover Dimension Calculation:</strong> Accurate calculations for:
+      <ul>
+        <li>Spine Width</li>
+        <li>Total Cover Width & Height</li>
+        <li>Bleed or Wrap Amounts</li>
+        <li>Safety Margins</li>
+        <li>Hinge Widths (for Case Bind)</li>
+        <li>Board Dimensions (for Case Bind & Hardcover Coil/Wire-O)</li>
+      </ul>
+    </li>
+    <li><strong>Binding Type Support:</strong> Handles Perfect Bind, Case Bind, Coil/Wire-O Softcover, and Coil/Wire-O Hardcover.</li>
+    <li><strong>Interactive Previews:</strong>
+      <ul>
+        <li>Visual preview of the generated cover template with technical guides.</li>
+        <li>Interactive interior page spread preview (Verso/Recto) with dynamic gutter visualization.</li>
+      </ul>
+    </li>
+    <li><strong>Downloadable Assets:</strong>
+      <ul>
+        <li>PDF cover templates with guides.</li>
+        <li>Adobe Photoshop (.jsx) script for automated cover template setup.</li>
+        <li>Adobe InDesign (.jsx) script for automated cover template setup.</li>
+        <li>Microsoft Word (.docx) interior page template with appropriate page size, bleed, and margins.</li>
+        <li>Adobe InDesign (.jsx) script to create an IDML interior page template.</li>
+        <li>Convenient ZIP archives for "Cover Files," "Interior Files," or "All Files."</li>
+      </ul>
+    </li>
+    <li><strong>Custom Barcode Generator:</strong>
+      <ul>
+        <li>Supports ISBN EAN-13 (+5 digit price add-on) and Data Matrix ECC 200.</li>
+        <li>Real-time preview of generated barcodes.</li>
+        <li>Download options for barcodes in JPEG and PDF formats.</li>
+        <li>Automatic ISBN-10 to ISBN-13 conversion and check digit validation.</li>
+      </ul>
+    </li>
+    <li><strong>User Experience:</strong>
+      <ul>
+        <li>Responsive design for various screen sizes.</li>
+        <li>Theme switching (Light, Dark, System preference).</li>
+        <li>Collapsible UI sections for improved layout organization.</li>
+        <li>"Copy to Clipboard" functionality for the book summary.</li>
+        <li>Clear input validation and user-friendly error messages.</li>
+      </ul>
+    </li>
+    <li><strong>Technical Guides:</strong>
+      <ul>
+        <li>Togglable technical guides on cover previews.</li>
+        <li>Detailed interior layout and typography guidelines.</li>
+        <li>Explanations for gutter margins and file specifications.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2 id="tech-stack">Tech Stack</h2>
+  <ul>
+    <li><strong>Frontend:</strong>
+      <ul>
+        <li>React 19 (with TypeScript)</li>
+        <li>HTML5</li>
+        <li>Tailwind CSS (via CDN for styling)</li>
+      </ul>
+    </li>
+    <li><strong>Core Libraries:</strong>
+      <ul>
+        <li><code>jspdf</code>: For generating PDF documents (cover templates, barcode PDFs).</li>
+        <li><code>jszip</code>: For creating ZIP archives of downloadable files.</li>
+        <li><code>bwip-js</code>: For generating barcode images (ISBN, Data Matrix).</li>
+        <li><code>docx</code>: For generating Microsoft Word (.docx) interior templates.</li>
+        <li><code>@google/genai</code>: For integrating with Google's Gemini API (Branding Hub feature - currently commented out).</li>
+        <li><code>html2canvas</code>: (Included in <code>importmap</code>, potentially for image rendering or used by a dependency).</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2 id="project-structure">Project Structure</h2>
+  <pre><code>/book-template-generator
+├── /src
+│   ├── /components
+│   │   ├── BarcodeIcon.tsx
+│   │   ├── Button.tsx
+│   │   ├── CheckIcon.tsx
+│   │   ├── ChevronIcon.tsx
+│   │   ├── ClipboardIcons.tsx
+│   │   ├── DocFileIcon.tsx
+│   │   ├── FileDownloadIcon.tsx
+│   │   ├── GuideRenderer.ts       # Deprecated
+│   │   ├── Input.tsx
+│   │   ├── InteractiveInteriorSetup.tsx
+│   │   ├── InteriorLayoutGuidelines.tsx
+│   │   ├── InteriorPageSetup.tsx  # Deprecated
+│   │   ├── LightbulbIcon.tsx
+│   │   ├── Modal.tsx
+│   │   ├── MoonIcon.tsx
+│   │   ├── PdfFileIcon.tsx
+│   │   ├── PdfGenerator.ts
+│   │   ├── ScriptFileIcon.tsx
+│   │   ├── ScriptGenerators.ts
+│   │   ├── Select.tsx
+│   │   ├── SunIcon.tsx
+│   │   ├── SystemThemeIcon.tsx
+│   │   ├── TemplatePreview.tsx
+│   │   ├── TextArea.tsx
+│   │   ├── ThemeSwitcher.tsx
+│   │   ├── WordGenerator.ts
+│   │   └── ZipFileIcon.tsx
+│   ├── App.tsx                 # Main application component
+│   ├── constants.ts            # Application-wide constants
+│   ├── index.tsx               # Entry point for React application
+│   └── types.ts                # TypeScript type definitions
+├── index.html                  # Main HTML file, loads the application
+├── metadata.json               # Metadata for the AI Code Companion (if used)
+└── README.md                   # This file
+</code></pre>
+
+  <h2 id="prerequisites">Prerequisites</h2>
+  <ul>
+    <li>A modern web browser that supports ES modules (e.g., Chrome, Firefox, Safari, Edge).</li>
+    <li><strong>For using the AI-powered "Branding Hub" feature (currently commented out):</strong>
+      <ul>
+        <li>A valid API Key for the Google Gemini API. This key needs to be available as <code>process.env.API_KEY</code> in the execution environment.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2 id="installation-setup">Installation &amp; Setup</h2>
+  <p>This project is designed to run directly in the browser without a complex build step for its core functionality.</p>
+  <ol>
+    <li><strong>Clone the repository:</strong>
+      <pre><code>git clone https://your-repository-url/book-template-generator.git</code></pre>
+    </li>
+    <li><strong>Navigate into the project directory:</strong>
+      <pre><code>cd book-template-generator</code></pre>
+    </li>
+    <li><strong>Environment Variables (Optional - for AI features):</strong>
+      <p>If you plan to enable and use the "Branding Hub" feature which uses the Gemini API:</p>
+      <ul>
+        <li>The application expects the Gemini API key to be available via <code>process.env.API_KEY</code>. How this is set depends on your hosting or local serving environment if you intend to use AI features. For simple static hosting, this is non-trivial without a backend or build process. For deployments, configure this in your hosting provider's settings.</li>
+      </ul>
+    </li>
+    <li><strong>Run the application:</strong>
+      <ul>
+        <li>Open the <code>index.html</code> file directly in your web browser.</li>
+        <li>OR, for a better experience and to avoid potential issues with file paths or module loading, serve the project root directory using a simple local HTTP server. For example, using Node.js <code>serve</code>:
+          <pre><code>npx serve .</code></pre>
+          Then open <code>http://localhost:3000</code> (or the port indicated by <code>serve</code>) in your browser.
+        </li>
+      </ul>
+    </li>
+  </ol>
+
+  <h2 id="usage-running-the-app">Usage / Running the App</h2>
+  <ol>
+    <li>Ensure you have followed the Installation & Setup steps.</li>
+    <li>Open <code>index.html</code> in your browser or navigate to the local server address if you started one.</li>
+    <li>Use the form in the "Book Specifications & Summary" section to input your book's details:
+      <ul>
+        <li>Book Title (Optional)</li>
+        <li>Trim Width & Height</li>
+        <li>Binding Type</li>
+        <li>Page Count and Paper Stock (required for binding types that calculate spine width)</li>
+      </ul>
+    </li>
+    <li>Click "Calculate & View Options".</li>
+    <li>The "Previews & Setup Guides" section will update with:
+      <ul>
+        <li>A visual preview of your cover template.</li>
+        <li>An interactive interior page setup guide.</li>
+        <li>Download buttons for various template files (PDF, JSX scripts, DOCX, ZIP).</li>
+      </ul>
+    </li>
+    <li>Optionally, use the "Generate Barcode Image" section to create and download ISBN or Data Matrix barcodes.</li>
+    <li>Use the theme switcher in the header to toggle between Light, Dark, and System themes.</li>
+  </ol>
+
+  <h2 id="api-endpoints">API Endpoints</h2>
+  <p>This is a frontend-only application. It interacts with the Google Gemini API (if the Branding Hub feature is enabled) which is an external service. No backend API is hosted by this project itself.</p>
+
+  <h2 id="deployment">Deployment</h2>
+  <p>This application is a static frontend website and can be deployed to any static site hosting provider.</p>
+  <p><strong>Steps:</strong></p>
+  <ol>
+    <li>Ensure all paths in <code>index.html</code> (especially for <code>src/index.tsx</code>) are correct for your deployment environment (usually root-relative paths like <code>/src/index.tsx</code> are fine).</li>
+    <li>Upload the entire project folder (or just the <code>src</code> directory and <code>index.html</code>, <code>metadata.json</code> if your host serves <code>index.html</code> from root) to your chosen static hosting service.
+    Popular choices include:
+      <ul>
+        <li>Netlify</li>
+        <li>Vercel</li>
+        <li>GitHub Pages</li>
+        <li>AWS S3 with CloudFront</li>
+        <li>Firebase Hosting</li>
+      </ul>
+    </li>
+    <li><strong>Environment Variables for AI Features:</strong> If you are using the Gemini API (Branding Hub), you <strong>must</strong> configure the <code>API_KEY</code> as an environment variable in your hosting provider's settings. Refer to your hosting provider's documentation on how to set environment variables for frontend builds or functions if you decide to proxy API calls.</li>
+  </ol>
+  <p>No special build commands are currently required for deployment as is.</p>
+
+  <h2 id="contributing">Contributing</h2>
+  <p>Contributions are welcome! If you have suggestions for improvements or find any bugs, please feel free to:</p>
+  <ol>
+    <li>Fork the repository.</li>
+    <li>Create a new branch (<code>git checkout -b feature/YourAmazingFeature</code>).</li>
+    <li>Make your changes.</li>
+    <li>Commit your changes (<code>git commit -m 'Add some AmazingFeature'</code>).</li>
+    <li>Push to the branch (<code>git push origin feature/YourAmazingFeature</code>).</li>
+    <li>Open a Pull Request.</li>
+  </ol>
+  <p>Please open an issue first to discuss any major changes or new features.</p>
+
+  <h2 id="license">License</h2>
+  <p>This project is licensed under the MIT License. See the <code>LICENSE</code> file (if one exists) for more details, or assume MIT if not explicitly stated.</p>
+
+</body>
+</html>

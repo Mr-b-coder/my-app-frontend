@@ -1,0 +1,6 @@
+{
+  "name": "Book  Template Generator",
+  "description": "A smart assistant to help generate cover templates for perfect bound and case bound books by calculating spine width, wrap, hinges, and total cover dimensions based on page count, paper stock, and trim size.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}

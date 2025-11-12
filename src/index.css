@@ -1,0 +1,10 @@
+@layer base {
+  body {
+    @apply bg-bg-primary dark:bg-dark-bg-primary; /* Light blue/gray for light mode, dark for dark mode */
+    @apply text-text-primary dark:text-dark-text-primary; /* Sets the default text color for the whole app */
+  }
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
