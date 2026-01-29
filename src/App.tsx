@@ -743,21 +743,6 @@ const App: React.FC = () => {
         </Header.Actions>
       </Header>
 
-      {/* Beta Alert Banner */}
-      <div className="mb-6 p-4 bg-system-warning-light dark:bg-system-warning-dark-bg border-l-4 border-system-warning dark:border-system-warning rounded-md">
-        <div className="flex items-center">
-          <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-system-warning dark:text-system-warning" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-            </svg>
-          </div>
-          <div className="ml-3">
-            <p className="text-sm text-system-warning-dark dark:text-system-warning-light-text">
-              <span className="font-medium">Notice:</span> Interior file downloads are temporarily disabled while we make improvements. Please use the "Download Cover Files" button for now.
-            </p>
-          </div>
-        </div>
-      </div>
 
       <canvas ref={ean13CanvasRef} style={{ display: 'none' }}></canvas>
       <canvas ref={ean5CanvasRef} style={{ display: 'none' }}></canvas>
@@ -842,17 +827,19 @@ const App: React.FC = () => {
                         <div className="mt-4 flex space-x-3 justify-center">
                           <Button
                             onClick={() => handleDownloadCustomBarcode('JPEG')}
+                            leftIcon={<Icon size="sm">download</Icon>}
                             isDisabled={!ean13Data || !!isbnBarcodeError || isIsbnBarcodeProcessing}
                             variant="primary" size="sm"
                           >
-                            {isIsbnBarcodeProcessing && currentProcessingFormat === 'BARCODE_JPEG' ? 'Processing...' : 'Download Barcode (JPEG)'}
+                            {isIsbnBarcodeProcessing && currentProcessingFormat === 'BARCODE_JPEG' ? 'Processing...' : 'Barcode (JPEG)'}
                           </Button>
                           <Button
                             onClick={() => handleDownloadCustomBarcode('PDF')}
+                            leftIcon={<Icon size="sm">download</Icon>}
                             isDisabled={!ean13Data || !!isbnBarcodeError || isIsbnBarcodeProcessing}
                             variant="secondary" size="sm"
                           >
-                            {isIsbnBarcodeProcessing && currentProcessingFormat === 'BARCODE_PDF' ? 'Processing...' : 'Download Barcode (PDF)'}
+                            {isIsbnBarcodeProcessing && currentProcessingFormat === 'BARCODE_PDF' ? 'Processing...' : 'Barcode (PDF)'}
                           </Button>
                         </div>
                       </div>
@@ -890,17 +877,19 @@ const App: React.FC = () => {
                         <div className="mt-4 flex space-x-3 justify-center">
                           <Button
                             onClick={() => handleDownloadDataMatrixBarcode('JPEG')}
+                            leftIcon={<Icon size="sm">download</Icon>}
                             isDisabled={!dataMatrixImageDataUrl || !!dataMatrixError || isDataMatrixProcessing}
                             variant="primary" size="sm"
                           >
-                            {isDataMatrixProcessing && currentProcessingFormat === 'DATAMATRIX_JPEG' ? 'Processing...' : 'Download Barcode (JPEG)'}
+                            {isDataMatrixProcessing && currentProcessingFormat === 'DATAMATRIX_JPEG' ? 'Processing...' : 'Barcode (JPEG)'}
                           </Button>
                           <Button
                             onClick={() => handleDownloadDataMatrixBarcode('PDF')}
+                            leftIcon={<Icon size="sm">download</Icon>}
                             isDisabled={!dataMatrixImageDataUrl || !!dataMatrixError || isDataMatrixProcessing}
                             variant="secondary" size="sm"
                           >
-                            {isDataMatrixProcessing && currentProcessingFormat === 'DATAMATRIX_PDF' ? 'Processing...' : 'Download Barcode (PDF)'}
+                            {isDataMatrixProcessing && currentProcessingFormat === 'DATAMATRIX_PDF' ? 'Processing...' : 'Barcode (PDF)'}
                           </Button>
                         </div>
                       </div>
@@ -933,7 +922,7 @@ const App: React.FC = () => {
                   <Input label="Trim Width (inches)" id="trimWidth" type="number" name="trimWidth" value={formData.trimWidth} onChange={handleTemplateFormChange} placeholder="e.g., 6" required step="0.001" min="1" />
                   <Input label="Trim Height (inches)" id="trimHeight" type="number" name="trimHeight" value={formData.trimHeight} onChange={handleTemplateFormChange} placeholder="e.g., 9" required step="0.001" min="1" />
                   <Select
-                    label="Binding Type"
+                    label="Binding Type"  
                     id="bindingType"
                     value={formData.bindingType}
                     onChange={handleSelectChange('bindingType')}
@@ -962,10 +951,10 @@ const App: React.FC = () => {
                         <div className="mt-4 pt-4 border-t border-grey-300 dark:border-grey-700 space-y-4">
                           <h3 className="text-lg font-medium">Download Your Files</h3>
                           {isProcessing && currentProcessingFormat && ( <div className="mb-4 p-3 bg-grey-100 dark:bg-grey-800 text-grey-600 dark:text-grey-300 rounded-md text-sm text-center"> Generating {currentProcessingFormat}... Please wait. </div> )}
-                          <Button onClick={() => handleDownload('all')} leftIcon={<Icon size="sm">folder_zip</Icon>} isDisabled={true} variant="primary" className="w-full opacity-50 cursor-not-allowed"> All Files (Disabled) </Button>
+                          <Button onClick={() => handleDownload('all')} leftIcon={<Icon size="sm">download</Icon>} isDisabled={isProcessing} variant="info" className="w-full [&>span:nth-child(2)]:text-left [&>span:nth-child(2)]:flex-initial [&>span:first-child]:shrink-0"> Download All Files </Button>
                           <div className="flex space-x-3">
-                            <Button onClick={() => handleDownload('cover')} leftIcon={<Icon size="sm">folder_zip</Icon>} isDisabled={isProcessing} variant="secondary" className="flex-1"> Cover Files </Button>
-                            <Button onClick={() => handleDownload('interior')} leftIcon={<Icon size="sm">folder_zip</Icon>} isDisabled={true} variant="secondary" className="flex-1 opacity-50 cursor-not-allowed"> Interior (Disabled) </Button>
+                            <Button onClick={() => handleDownload('cover')} leftIcon={<Icon size="sm">download</Icon>} isDisabled={isProcessing} variant="grey-primary" className="flex-1 [&>span:nth-child(2)]:text-left [&>span:nth-child(2)]:flex-initial [&>span:first-child]:shrink-0"> Cover Files </Button>
+                            <Button onClick={() => handleDownload('interior')} leftIcon={<Icon size="sm">download</Icon>} isDisabled={isProcessing} variant="grey-primary" className="flex-1 [&>span:nth-child(2)]:text-left [&>span:nth-child(2)]:flex-initial [&>span:first-child]:shrink-0"> Book Files </Button>
                           </div>
                         </div>
                       )}
@@ -1030,7 +1019,7 @@ const App: React.FC = () => {
                   </div>
                 )}
               </div>
-              <div className="border border-grey-800 dark:border-dark-border-color rounded-lg">
+              <div className="border border-border-color dark:border-dark-border-color rounded-lg">
                 <button onClick={() => togglePreviewSection('interior')} className="w-full p-3 bg-bg-tertiary dark:bg-dark-bg-primary hover:bg-grey-200 dark:hover:bg-grey-700 rounded-t-lg flex justify-between items-center text-left font-medium" aria-expanded={activePreviewSection === 'interior'} aria-controls="interior-setup-content">
                   <span>Interior Page Setup Guide</span>
                   <Icon size="md" className={`transition-transform duration-200 ${activePreviewSection === 'interior' ? 'rotate-180' : ''}`}>expand_more</Icon>

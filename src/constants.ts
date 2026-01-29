@@ -29,7 +29,7 @@ export const PAPER_STOCK_OPTIONS: PaperStockOption[] = [
   { name: "Select Paper Stock", ppi: 0 },
   //{ name: "50# Uncoated – 510 PPI", ppi: 510 },
   { name: "60# Uncoated", ppi: 435 },
-  { name: "70# Uncoated", ppi: 400 },
+  { name: "70# Uncoated", ppi: 415 },
   //{ name: "80# Gloss Text – 520 PPI", ppi: 520 },
   { name: " 80# coated (silk, gloss, matte)", ppi: 475 },
   //{ name: "80# Uncoated – 333 PPI", ppi: 333 },
