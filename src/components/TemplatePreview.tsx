@@ -9,7 +9,7 @@ interface TemplatePreviewProps {
 export const TemplatePreview = ({
   calculations,
   showTechnicalGuides,
-}: TemplatePreviewProps): JSX.Element | null => {
+}: TemplatePreviewProps): React.JSX.Element | null => {
   if (!calculations) {
     return <p className="text-center text-grey-500 dark:text-grey-400">Enter details above to see a preview.</p>;
   }
@@ -166,7 +166,7 @@ export const TemplatePreview = ({
 
   const renderBarcodePlaceholder = (
     panelX: number, panelY: number, panelWidth: number, panelHeight: number, panelSafety: number
-  ): JSX.Element | null => {
+  ): React.JSX.Element | null => {
 
     const marginFromSafetyEdge = panelSafety * 0.25 > 5 ? 5 : Math.max(1, panelSafety * 0.25);
 
@@ -360,8 +360,8 @@ export const TemplatePreview = ({
     const punchHoleSpacing = Math.max(2, 0.375 * scaleFactor);
     const punchHoleCenterOffset = Math.max(1.5, 0.3125 * scaleFactor);
 
-    let barcodeArea: JSX.Element | null = null;
-    let fileSpecArea: JSX.Element | null = null;
+    let barcodeArea: React.JSX.Element | null = null;
+    let fileSpecArea: React.JSX.Element | null = null;
     // FIX: This variable was unused and caused a build error. It has been removed.
     // let yTopOfBarcodeRectForFrontCover = 0;
 
@@ -401,7 +401,7 @@ export const TemplatePreview = ({
         punchHoleEdgeX = boardAreaX + physicalBoardW - punchHoleCenterOffset;
       }
 
-      const punchHoles: JSX.Element[] = [];
+      const punchHoles: React.JSX.Element[] = [];
       if (showTechnicalGuides) {
         for (let y = boardAreaY + punchHoleSpacing / 2; y < boardAreaY + physicalBoardH - punchHoleSpacing / 3; y += punchHoleSpacing) {
           punchHoles.push(<circle key={`ph-${y}`} cx={punchHoleEdgeX} cy={y} r={punchHoleRadius} fill={colors.punchHoleColor} />);
@@ -471,7 +471,7 @@ export const TemplatePreview = ({
         punchHoleEdgeX = trimX + trimW - punchHoleCenterOffset;
       }
 
-      const punchHoles: JSX.Element[] = [];
+      const punchHoles: React.JSX.Element[] = [];
       if (showTechnicalGuides) {
         for (let y = trimY + punchHoleSpacing / 2; y < trimY + trimH - punchHoleSpacing / 3; y += punchHoleSpacing) {
           punchHoles.push(<circle key={`ph-${y}`} cx={punchHoleEdgeX} cy={y} r={punchHoleRadius} fill={colors.punchHoleColor} />);
