@@ -79,4 +79,13 @@ This frontend is continuously deployed to **Netlify** from the `main` branch of 
 - **Build Command:** `npm run build`
 - **Publish Directory:** `dist`
 
+**Required: Backend API URL (Netlify)**  
+In Netlify → Site → **Site configuration** → **Environment variables**, add:
+
+| Variable        | Value                          | Scopes   |
+|----------------|----------------------------------|----------|
+| `VITE_API_URL` | `https://your-backend.onrender.com` | Builds, Deploy previews |
+
+Use your real Render backend URL (no trailing slash). Without this, the live site will try to call `localhost` and you’ll see "Failed to fetch" for template download and Check PDF. After adding or changing it, trigger a **Clear cache and deploy site** (or push a commit) so the new value is baked into the build.
+
 Any push to the `main` branch will trigger a new deployment on Netlify.
