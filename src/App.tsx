@@ -16,11 +16,14 @@ import {
   HARDCOVER_COIL_WIRE_O_BOARD_EXTENSION_INCHES,
   HARDCOVER_COIL_WIRE_O_SAFETY_TOP_BOTTOM_INCHES,
   HARDCOVER_COIL_WIRE_O_SAFETY_BINDING_EDGE_INCHES,
-  HARDCOVER_COIL_WIRE_O_SAFETY_OUTSIDE_EDGE_INCHES
+  HARDCOVER_COIL_WIRE_O_SAFETY_OUTSIDE_EDGE_INCHES,
+  DUST_JACKET_FOLD_INCHES,
+  DUST_JACKET_FLAP_OPTIONS_INCHES
 } from './constants';
-import { Input, Select, Button, Icon, Tabs, Badge, Accordion } from '@acutrack-bookprint/acutrack-ds';
+import { Input, Select, Button, Icon, Tabs, Badge, Accordion, ButtonGroup } from '@acutrack-bookprint/acutrack-ds';
 import InteractiveInteriorSetup from './components/InteractiveInteriorSetup';
 import { TemplatePreview } from './components/TemplatePreview';
+import { DustJacketPreview } from './components/DustJacketPreview';
 import printRequirementsPdf from './Assets/Print-requirements.pdf';
 import { Routes, Route } from 'react-router-dom';
 import AppHeader from './components/AppHeader';
@@ -114,6 +117,7 @@ const App: React.FC = () => {
   const [summaryCopied, setSummaryCopied] = useState(false);
   const summaryTimeoutRef = useRef<number | null>(null);
   const [showTechnicalGuides, setShowTechnicalGuides] = useState(true);
+  const [previewTab, setPreviewTab] = useState<'cover' | 'dustJacket' | 'interior'>('cover');
   const [showDownloadOptionsSet, setShowDownloadOptionsSet] = useState(false);
   const [selectedCustomBarcodeType, setSelectedCustomBarcodeType] = useState<'isbn' | 'datamatrix'>('isbn');
   const [rawIsbnInput, setRawIsbnInput] = useState('');
@@ -149,9 +153,10 @@ const App: React.FC = () => {
     if (name === "bindingType") {
       const newBindingType = value as BindingType | '';
       if (newBindingType === '' || !isPageDetailsRequired(newBindingType)) {
-        setFormData(prev => ({ ...prev, pageCount: '', paperStockPPI: PAPER_STOCK_OPTIONS[0]?.ppi.toString() || '0', bindingType: newBindingType }));
+        setFormData(prev => ({ ...prev, pageCount: '', paperStockPPI: PAPER_STOCK_OPTIONS[0]?.ppi.toString() || '0', bindingType: newBindingType, includeDustJacket: false }));
       } else {
-        setFormData(prev => ({ ...prev, bindingType: newBindingType }));
+        const clearDustJacket = newBindingType !== BindingType.CASE_BIND;
+        setFormData(prev => ({ ...prev, bindingType: newBindingType, ...(clearDustJacket && { includeDustJacket: false, dustJacketFlapWidthInches: undefined }) }));
       }
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
@@ -398,6 +403,20 @@ const App: React.FC = () => {
       calculations.totalCoverWidth = (trimWidthNum * 2) + (boardThickness * 2) + calculations.spineWidth + (2 * calculations.wrapAmount) + 0.25;
       calculations.totalCoverHeight = calculations.boardHeight + (calculations.wrapAmount * 2);
       calculations.bleedAmount = 0;
+      if (formData.includeDustJacket) {
+        const flapWidth = formData.dustJacketFlapWidthInches ?? 3;
+        calculations.includeDustJacket = true;
+        calculations.dustJacketFlapWidthInches = flapWidth;
+        calculations.dustJacketFoldInches = DUST_JACKET_FOLD_INCHES;
+        const bleedInches = 0.25; // 0.25 in bleed for width
+        const turnaroundInches = DUST_JACKET_FOLD_INCHES; // 0.125
+        // Total width = 2×flaps + 0.25 bleed + 2×turnaround + trim size (2×trimWidth) + 0.125 + spine
+        calculations.dustJacketTotalWidth =
+          2 * flapWidth + bleedInches + 2 * turnaroundInches + 2 * trimWidthNum + 0.125 + (calculations.spineWidth ?? 0);
+        // Total height = trim height + 0.25 + 2×bleed
+        const heightBleed = STANDARD_BLEED_AMOUNT_INCHES;
+        calculations.dustJacketTotalHeight = trimHeightNum + 0.25 + 2 * heightBleed;
+      }
     } else if (formData.bindingType === BindingType.COIL_WIRE_O_SOFTCOVER) {
         calculations.bleedAmount = STANDARD_BLEED_AMOUNT_INCHES;
         calculations.totalCoverWidth = trimWidthNum + (calculations.bleedAmount * 2);
@@ -465,6 +484,11 @@ const App: React.FC = () => {
         safetyMarginBindingEdge: calculatedDimensions.safetyMarginBindingEdge ?? 0,
         safetyMarginOutsideEdge: calculatedDimensions.safetyMarginOutsideEdge ?? 0,
         bookTitle: calculatedDimensions.bookTitle || 'Untitled',
+        includeDustJacket: calculatedDimensions.includeDustJacket ?? false,
+        dustJacketFlapWidthInches: calculatedDimensions.dustJacketFlapWidthInches,
+        dustJacketFoldInches: calculatedDimensions.dustJacketFoldInches,
+        dustJacketTotalWidth: calculatedDimensions.dustJacketTotalWidth,
+        dustJacketTotalHeight: calculatedDimensions.dustJacketTotalHeight,
       };
 
       // Use VITE_API_URL with fallback so download works when .env is missing (e.g. local dev).
@@ -897,6 +921,35 @@ const App: React.FC = () => {
                   <>
                     <Input label="Page Count (Total)" id="pageCount" type="number" name="pageCount" value={formData.pageCount} onChange={handleTemplateFormChange} placeholder="e.g., 200" required={currentBindingRequiresPageData} min="2" />
                     <Select label="Paper Stock (Interior)" id="paperStockPPI" value={formData.paperStockPPI} onChange={handleSelectChange('paperStockPPI')} options={paperStockOptionsForSelect} />
+                    {formData.bindingType === BindingType.CASE_BIND && (
+                      <>
+                        <div className="flex items-center gap-2">
+                          <input type="checkbox" id="includeDustJacket" checked={!!formData.includeDustJacket} onChange={() => setFormData(prev => ({ ...prev, includeDustJacket: !prev.includeDustJacket, dustJacketFlapWidthInches: !prev.includeDustJacket ? (prev.dustJacketFlapWidthInches ?? 3) : prev.dustJacketFlapWidthInches }))} className="h-3 w-3 rounded border-grey-300 dark:border-grey-600 text-system-info dark:text-brand-orange focus:ring-system-info dark:focus:ring-brand-orange" />
+                          <label htmlFor="includeDustJacket" className="text-sm font-medium">Include dust jacket</label>
+                        </div>
+                        {formData.includeDustJacket && (
+                          <div>
+                            <span className="block text-sm font-medium text-grey-700 dark:text-grey-300 mb-2">Dust jacket flap width</span>
+                            <ButtonGroup size="sm" className="w-full max-w-[12rem] gap-2">
+                              {DUST_JACKET_FLAP_OPTIONS_INCHES.map((n) => (
+                                <Button
+                                  key={n}
+                                  type="button"
+                                  variant={(formData.dustJacketFlapWidthInches ?? 3) === n ? 'primary' : 'outline'}
+                                  size="sm"
+                                  isFullWidth
+                                  onClick={() => setFormData(prev => ({ ...prev, dustJacketFlapWidthInches: n }))}
+                                  aria-pressed={(formData.dustJacketFlapWidthInches ?? 3) === n}
+                                  aria-label={`Flap width ${n} inches`}
+                                >
+                                  {n}"
+                                </Button>
+                              ))}
+                            </ButtonGroup>
+                          </div>
+                        )}
+                      </>
+                    )}
                   </>
                 )}
                 {!currentBindingRequiresPageData && formData.bindingType && ( <p className="text-sm text-grey-500 dark:text-grey-400 p-3 bg-grey-50 dark:bg-grey-800/50 rounded-md">Page count and paper stock are not required for <span className="font-semibold">{formData.bindingType}</span> template generation.</p> )}
@@ -952,50 +1005,59 @@ const App: React.FC = () => {
           </div>
           {calculatedDimensions ? (
             <div className="space-y-6">
-              <Accordion
-                title="Cover Template Preview"
-                isOpenByDefault={true}
-                variant="minimal"
-                isFullWidth={true}
-                contentClassName="p-0"
-              >
-                <div id="cover-preview-content" className="p-4 pt-0">
-                  <div className="flex justify-end items-center mb-1">
-                    <label htmlFor="showTechnicalGuidesToggle" className="flex items-center text-xs text-grey-500 dark:text-grey-400 cursor-pointer">
-                      <input type="checkbox" id="showTechnicalGuidesToggle" checked={showTechnicalGuides} onChange={() => setShowTechnicalGuides(!showTechnicalGuides)} className="mr-1 h-3 w-3 rounded border-grey-300 dark:border-grey-600 text-system-info dark:text-brand-orange focus:ring-system-info dark:focus:ring-brand-orange dark:focus:ring-offset-grey-800" /> Show Technical Guides
-                    </label>
-                  </div>
-                  <div className="border border-border-color dark:border-dark-border-color rounded p-2 bg-bg-tertiary dark:bg-dark-bg-secondary aspect-[1.414] md:aspect-[1.6] lg:aspect-[1.7] flex items-center justify-center">
-                    <TemplatePreview calculations={calculatedDimensions} showTechnicalGuides={showTechnicalGuides} />
-                  </div>
-                  {calculatedDimensions && currentLegendItems.length > 0 && (
-                    <div className="mt-3 text-sm">
-                      <h4 className="font-medium text-grey-600 dark:text-grey-400 mb-2">Legend:</h4>
-                      <div className="flex flex-wrap justify-start items-center gap-x-4 gap-y-1">
-                        {currentLegendItems.map(item => (
-                          <div key={item.label} className="flex items-center">
-                            {item.type === 'box' ? ( <span className="w-3 h-3 inline-block mr-1.5 border border-grey-400 dark:border-grey-600" style={{ backgroundColor: item.color }} aria-hidden="true"></span> ) : ( <span className="w-4 h-0.5 inline-block mr-1.5" style={{ backgroundColor: item.color, borderStyle: item.type === 'line-dashed' ? 'dashed' : 'solid', borderWidth: '2px', borderColor: item.color }} aria-hidden="true"></span> )}
-                            <span className="text-xs text-grey-500 dark:text-grey-400">{item.label}</span>
+              <Tabs value={previewTab} onValueChange={({ value }) => { if (value === 'cover' || value === 'dustJacket' || value === 'interior') setPreviewTab(value); }}>
+                <Tabs.List className="mb-2">
+                  <Tabs.Tab value="cover">Cover</Tabs.Tab>
+                  <Tabs.Tab value="dustJacket">Dust Jacket</Tabs.Tab>
+                  <Tabs.Tab value="interior">Interior</Tabs.Tab>
+                </Tabs.List>
+                <Tabs.Panels>
+                  <Tabs.Panel value="cover">
+                    <div id="cover-preview-content" className="p-4 pt-0">
+                      <div className="flex justify-end items-center mb-1">
+                        <label htmlFor="showTechnicalGuidesToggle" className="flex items-center text-xs text-grey-500 dark:text-grey-400 cursor-pointer">
+                          <input type="checkbox" id="showTechnicalGuidesToggle" checked={showTechnicalGuides} onChange={() => setShowTechnicalGuides(!showTechnicalGuides)} className="mr-1 h-3 w-3 rounded border-grey-300 dark:border-grey-600 text-system-info dark:text-brand-orange focus:ring-system-info dark:focus:ring-brand-orange dark:focus:ring-offset-grey-800" /> Show Technical Guides
+                        </label>
+                      </div>
+                      <div className="border border-border-color dark:border-dark-border-color rounded p-2 bg-bg-tertiary dark:bg-dark-bg-secondary aspect-[1.414] md:aspect-[1.6] lg:aspect-[1.7] flex items-center justify-center">
+                        <TemplatePreview calculations={calculatedDimensions} showTechnicalGuides={showTechnicalGuides} />
+                      </div>
+                      {calculatedDimensions && currentLegendItems.length > 0 && (
+                        <div className="mt-3 text-sm">
+                          <h4 className="font-medium text-grey-600 dark:text-grey-400 mb-2">Legend:</h4>
+                          <div className="flex flex-wrap justify-start items-center gap-x-4 gap-y-1">
+                            {currentLegendItems.map(item => (
+                              <div key={item.label} className="flex items-center">
+                                {item.type === 'box' ? ( <span className="w-3 h-3 inline-block mr-1.5 border border-grey-400 dark:border-grey-600" style={{ backgroundColor: item.color }} aria-hidden="true"></span> ) : ( <span className="w-4 h-0.5 inline-block mr-1.5" style={{ backgroundColor: item.color, borderStyle: item.type === 'line-dashed' ? 'dashed' : 'solid', borderWidth: '2px', borderColor: item.color }} aria-hidden="true"></span> )}
+                                <span className="text-xs text-grey-500 dark:text-grey-400">{item.label}</span>
+                              </div>
+                            ))}
                           </div>
-                        ))}
+                        </div>
+                      )}
+                    </div>
+                  </Tabs.Panel>
+                  <Tabs.Panel value="dustJacket">
+                    <div id="dust-jacket-preview-content" className="p-4 pt-0">
+                      <div className="flex justify-end items-center mb-1">
+                        <label htmlFor="showTechnicalGuidesToggleDj" className="flex items-center text-xs text-grey-500 dark:text-grey-400 cursor-pointer">
+                          <input type="checkbox" id="showTechnicalGuidesToggleDj" checked={showTechnicalGuides} onChange={() => setShowTechnicalGuides(!showTechnicalGuides)} className="mr-1 h-3 w-3 rounded border-grey-300 dark:border-grey-600 text-system-info dark:text-brand-orange focus:ring-system-info dark:focus:ring-brand-orange dark:focus:ring-offset-grey-800" /> Show Technical Guides
+                        </label>
+                      </div>
+                      <div className="border border-border-color dark:border-dark-border-color rounded p-2 bg-bg-tertiary dark:bg-dark-bg-secondary aspect-[1.414] md:aspect-[1.6] lg:aspect-[1.7] flex items-center justify-center">
+                        <DustJacketPreview calculations={calculatedDimensions} showTechnicalGuides={showTechnicalGuides} />
                       </div>
                     </div>
-                  )}
-                </div>
-              </Accordion>
-              <Accordion
-                title="Interior Page Setup Guide"
-                variant="minimal"
-                isOpenByDefault={false}
-                isFullWidth={true}
-                contentClassName="p-0"
-              >
-                {calculatedDimensions && (
-                  <div id="interior-setup-content" className="p-0">
-                    <InteractiveInteriorSetup pageCount={calculatedDimensions.pageCountNum} trimWidth={calculatedDimensions.trimWidthNum} trimHeight={calculatedDimensions.trimHeightNum} />
-                  </div>
-                )}
-              </Accordion>
+                  </Tabs.Panel>
+                  <Tabs.Panel value="interior">
+                    {calculatedDimensions && (
+                      <div id="interior-setup-content" className="p-0">
+                        <InteractiveInteriorSetup pageCount={calculatedDimensions.pageCountNum} trimWidth={calculatedDimensions.trimWidthNum} trimHeight={calculatedDimensions.trimHeightNum} />
+                      </div>
+                    )}
+                  </Tabs.Panel>
+                </Tabs.Panels>
+              </Tabs>
             </div>
           ) : (
             <div className="space-y-6 py-6">

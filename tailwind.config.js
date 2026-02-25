@@ -236,25 +236,25 @@ export default {
         'grey-secondary-hover': '#6B7280',
         'grey-accent': '#374151',
         'grey-accent-hover': '#1F2937',
-        // --- LIGHT MODE PALETTE ---
+        // --- LIGHT MODE PALETTE (aligned with DS @acutrack-bookprint/acutrack-ds) ---
         'text-primary': '#1B3A7B',
         'text-secondary': '#3C4858',
         'text-on-accent': '#FFFFFF',
-        'bg-primary': '#f6f7fa',
-        'bg-secondary': '#FFFFFF',
-        'bg-tertiary': '#ebeff9',
+        'bg-primary': '#f6f7fa',      // DS bg-bg-primary rgb(246 247 250)
+        'bg-secondary': '#FFFFFF',    // DS bg-bg-secondary
+        'bg-tertiary': '#dce3f0',     // DS bg-bg-tertiary rgb(220 227 240)
         'border-color': '#DFE4E9',
         'border-strong': '#5fead4',
-        // --- DARK MODE PALETTE ---
+        // --- DARK MODE PALETTE (aligned with DS) ---
         'dark-brand-orange': '#0d9488',
         'dark-brand-orange-hover': '#5eead4',
         'dark-brand-navy': '#53e3cb',
         'dark-text-primary': '#F6F8FD',
         'dark-text-secondary': '#9CA3AF',
         'dark-text-on-accent': '#FFFFFF',
-        'dark-bg-primary': '#1c212c',
-        'dark-bg-secondary': '#101620',
-        'dark-bg-tertiary': '#1e2a3a',
+        'dark-bg-primary': '#13161d',   // DS dark bg rgb(19 22 29)
+        'dark-bg-secondary': '#16191c', // DS dark bg rgb(22 25 28)
+        'dark-bg-tertiary': '#1d2227',  // DS dark bg rgb(29 34 39)
         'dark-border-color': '#1c3332',
         'dark-border-strong': '#ffffff',
         // --- DARK MODE GREY THEME COLORS ---

@@ -39,5 +39,9 @@ export const PAPER_STOCK_OPTIONS: PaperStockOption[] = [
 
 export const DEFAULT_BINDING_TYPE = BindingType.PERFECT_BIND;
 
+// Dust jacket (Case Bind / Hardcover only)
+export const DUST_JACKET_FOLD_INCHES = 0.125;
+export const DUST_JACKET_FLAP_OPTIONS_INCHES = [3, 4] as const;
+
 // General constants
 export const INCH_TO_POINTS = 72;

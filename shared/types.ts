@@ -16,6 +16,8 @@ export interface BookCoverFormData {
   trimWidth: string;
   trimHeight: string;
   bindingType: BindingType | '';
+  includeDustJacket?: boolean;
+  dustJacketFlapWidthInches?: number;
 }
 
 export interface CoverCalculations {
@@ -39,6 +41,11 @@ export interface CoverCalculations {
   safetyMarginTopBottom?: number;
   safetyMarginBindingEdge?: number;
   safetyMarginOutsideEdge?: number;
+  includeDustJacket?: boolean;
+  dustJacketFlapWidthInches?: number;
+  dustJacketFoldInches?: number;
+  dustJacketTotalWidth?: number;
+  dustJacketTotalHeight?: number;
 }
 
 // Add this interface to fix the error from constants.ts
