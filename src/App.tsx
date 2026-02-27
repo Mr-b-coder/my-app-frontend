@@ -759,7 +759,7 @@ const App: React.FC = () => {
           <Accordion
             title="Generate Barcode Image"
             isOpenByDefault={false}
-            variant="filled"
+            variant="bordered"
             isFullWidth={true}
             contentClassName="p-0"
           >
@@ -898,7 +898,7 @@ const App: React.FC = () => {
           <Accordion
             title="Book Specifications & Summary"
             isOpenByDefault={true}
-            variant="filled"
+            variant="bordered"
             isFullWidth={true}
             contentClassName="p-0"
           >
