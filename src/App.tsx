@@ -554,68 +554,6 @@ const App: React.FC = () => {
     }
   };
 
-  const handleDownloadDustJacketCheck = async () => {
-    if (!calculatedDimensions?.includeDustJacket) return;
-    setIsProcessing(true);
-    setCurrentProcessingFormat('Dust jacket PDF');
-    setError(null);
-    try {
-      const selectedPaper = PAPER_STOCK_OPTIONS.find(opt => opt.ppi.toString() === formData.paperStockPPI);
-      const payload = {
-        packageType: 'cover' as const,
-        bindingName: calculatedDimensions.bindingType,
-        bindingType: formData.bindingType,
-        pageCount: calculatedDimensions.pageCountNum ?? 0,
-        paperStock: selectedPaper ? selectedPaper.name : 'N/A',
-        totalWidth: calculatedDimensions.totalCoverWidth,
-        totalHeight: calculatedDimensions.totalCoverHeight,
-        trimWidth: calculatedDimensions.trimWidthNum,
-        trimHeight: calculatedDimensions.trimHeightNum,
-        spineWidth: calculatedDimensions.spineWidth ?? 0,
-        bleed: calculatedDimensions.bleedAmount ?? 0,
-        wrapAmount: calculatedDimensions.wrapAmount ?? 0,
-        hingeWidth: calculatedDimensions.hingeWidth ?? 0,
-        boardWidth: calculatedDimensions.boardWidth ?? 0,
-        boardHeight: calculatedDimensions.boardHeight ?? 0,
-        frontPanelBoardWidth: calculatedDimensions.frontPanelBoardWidth ?? 0,
-        safetyMargin: calculatedDimensions.safetyMargin ?? 0,
-        bookTitle: calculatedDimensions.bookTitle || 'Untitled',
-        includeDustJacket: true,
-        dustJacketFlapWidthInches: calculatedDimensions.dustJacketFlapWidthInches,
-        dustJacketFoldInches: calculatedDimensions.dustJacketFoldInches,
-        dustJacketTotalWidth: calculatedDimensions.dustJacketTotalWidth,
-        dustJacketTotalHeight: calculatedDimensions.dustJacketTotalHeight,
-      };
-      const apiBase = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
-      const response = await fetch(`${apiBase.replace(/\/$/, '')}/api/generate-dust-jacket`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) {
-        const errData = await response.json().catch(() => ({ error: response.statusText }));
-        const msg = errData.error || `Server responded with status ${response.status}.`;
-        if (response.status === 404) {
-          throw new Error(`${msg} Rebuild and restart the backend (npm run build && npm start in my-app-backend) so the /api/generate-dust-jacket route is available.`);
-        }
-        throw new Error(msg);
-      }
-      const blob = await response.blob();
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'dust-jacket-check.pdf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(link.href);
-    } catch (err: any) {
-      setError(`Dust jacket download failed: ${err?.message ?? err}`);
-    } finally {
-      setIsProcessing(false);
-      setCurrentProcessingFormat(null);
-    }
-  };
-
   const summaryForClipboard = (): string => {
     return getCondensedSummaryLines(calculatedDimensions).map(line => `${line.label} ${line.value}`).join('\n');
   };
@@ -1080,18 +1018,6 @@ const App: React.FC = () => {
                 className="flex items-center"
               >
                 Download PDF
-              </Button>
-            )}
-            {showDustJacketTab && (
-              <Button
-                onClick={handleDownloadDustJacketCheck}
-                variant="outline"
-                size="sm"
-                leftIcon={<Icon size="sm">download</Icon>}
-                isDisabled={isProcessing}
-                className="flex items-center"
-              >
-                Download dust jacket (check)
               </Button>
             )}
           </div>
