@@ -55,7 +55,6 @@ export const DustJacketPreview = ({
   const flapWidthPt = flapWidth * scaleFactor; // main flap width (user: 3 or 4 in)
   const panelWPt = panelW * scaleFactor;
   const spinePt = spineW * scaleFactor;
-  const safetyPt = safetyMargin * scaleFactor;
   // Flap safety rect width: 2.87" for 3" flap, 3.87" for 4" flap (1" difference), centered in main flap only (excluding fold)
   const flapWhiteRectWidthInches = flapWidth === 4 ? 3.87 : 2.87;
   const flapWhiteRectPt = flapWhiteRectWidthInches * scaleFactor;
