@@ -49,7 +49,8 @@ const getCondensedSummaryLines = (calculations: CoverCalculations | null): Summa
   const {
     bookTitle,
     bindingType, trimWidthNum, trimHeightNum, pageCountNum,
-    spineWidth, totalCoverWidth, totalCoverHeight
+    spineWidth, totalCoverWidth, totalCoverHeight,
+    includeDustJacket, dustJacketTotalWidth, dustJacketTotalHeight
   } = calculations;
 
   const formatNumber = (num: number | undefined, precision: number = 3): string => {
@@ -68,10 +69,13 @@ const getCondensedSummaryLines = (calculations: CoverCalculations | null): Summa
   if (pageCountNum) {
     lines.push({ label: "Pages:", value: `${pageCountNum}` });
   }
-  lines.push({ label: "Cover Size:", value: `${formatNumber(totalCoverWidth, 2)}W x ${formatNumber(totalCoverHeight, 2)}H inches` });
+  lines.push({ label: "Cover Size:", value: `${formatNumber(totalCoverWidth, 3)}W x ${formatNumber(totalCoverHeight, 3)}H inches` });
   lines.push({ label: "Binding:", value: bindingType });
   if (spineWidth !== undefined && spineWidth > 0) {
     lines.push({ label: "Spine Width:", value: `${formatNumber(spineWidth)} inches` });
+  }
+  if (includeDustJacket && dustJacketTotalWidth != null && dustJacketTotalHeight != null) {
+    lines.push({ label: "Dust Jacket Size:", value: `${formatNumber(dustJacketTotalWidth, 3)}W x ${formatNumber(dustJacketTotalHeight, 3)}H inches` });
   }
 
   return lines;
@@ -118,6 +122,17 @@ const App: React.FC = () => {
   const summaryTimeoutRef = useRef<number | null>(null);
   const [showTechnicalGuides, setShowTechnicalGuides] = useState(true);
   const [previewTab, setPreviewTab] = useState<'cover' | 'dustJacket' | 'interior'>('cover');
+  // Dust Jacket tab only after user has clicked "Get your files" with dust jacket included
+  const showDustJacketTab = formData.bindingType === BindingType.CASE_BIND && !!formData.includeDustJacket && !!calculatedDimensions?.includeDustJacket;
+  useEffect(() => {
+    if (!showDustJacketTab && previewTab === 'dustJacket') setPreviewTab('cover');
+  }, [showDustJacketTab, previewTab]);
+
+  const clearTemplateResults = useCallback(() => {
+    setCalculatedDimensions(null);
+    setShowDownloadOptionsSet(false);
+    setError(null);
+  }, []);
   const [showDownloadOptionsSet, setShowDownloadOptionsSet] = useState(false);
   const [selectedCustomBarcodeType, setSelectedCustomBarcodeType] = useState<'isbn' | 'datamatrix'>('isbn');
   const [rawIsbnInput, setRawIsbnInput] = useState('');
@@ -408,11 +423,14 @@ const App: React.FC = () => {
         calculations.includeDustJacket = true;
         calculations.dustJacketFlapWidthInches = flapWidth;
         calculations.dustJacketFoldInches = DUST_JACKET_FOLD_INCHES;
-        const bleedInches = 0.25; // 0.25 in bleed for width
+        const bleedInches = 0.25; // bleed for width (both sides)
         const turnaroundInches = DUST_JACKET_FOLD_INCHES; // 0.125
-        // Total width = 2×flaps + 0.25 bleed + 2×turnaround + trim size (2×trimWidth) + 0.125 + spine
+        const boardSizeInches = 0.098; // same as case bind board thickness
+        // Front/Back panel width = (Trim width + Board size) + 0.125
+        const dustJacketPanelWidth = trimWidthNum + boardSizeInches + 0.125;
+        // Dust jacket width: Back Flap + Turn around + Back Cover + Spine + Front Cover + Turn around + Front flap + Bleed
         calculations.dustJacketTotalWidth =
-          2 * flapWidth + bleedInches + 2 * turnaroundInches + 2 * trimWidthNum + 0.125 + (calculations.spineWidth ?? 0);
+          2 * flapWidth + 2 * turnaroundInches + 2 * dustJacketPanelWidth + (calculations.spineWidth ?? 0) + bleedInches;
         // Total height = trim height + 0.25 + 2×bleed
         const heightBleed = STANDARD_BLEED_AMOUNT_INCHES;
         calculations.dustJacketTotalHeight = trimHeightNum + 0.25 + 2 * heightBleed;
@@ -512,7 +530,7 @@ const App: React.FC = () => {
 
       const blob = await response.blob();
       const contentDisposition = response.headers.get('content-disposition');
-      let filename = "template-package.zip";
+      let filename = 'template-package.zip';
       if (contentDisposition) {
         const filenameMatch = contentDisposition.match(/filename="(.+)"/);
         if (filenameMatch && filenameMatch.length > 1) {
@@ -530,6 +548,68 @@ const App: React.FC = () => {
     } catch (err: any) {
       console.error(`Download ${packageType} error:`, err);
       setError(`Failed to generate package: ${err.message}`);
+    } finally {
+      setIsProcessing(false);
+      setCurrentProcessingFormat(null);
+    }
+  };
+
+  const handleDownloadDustJacketCheck = async () => {
+    if (!calculatedDimensions?.includeDustJacket) return;
+    setIsProcessing(true);
+    setCurrentProcessingFormat('Dust jacket PDF');
+    setError(null);
+    try {
+      const selectedPaper = PAPER_STOCK_OPTIONS.find(opt => opt.ppi.toString() === formData.paperStockPPI);
+      const payload = {
+        packageType: 'cover' as const,
+        bindingName: calculatedDimensions.bindingType,
+        bindingType: formData.bindingType,
+        pageCount: calculatedDimensions.pageCountNum ?? 0,
+        paperStock: selectedPaper ? selectedPaper.name : 'N/A',
+        totalWidth: calculatedDimensions.totalCoverWidth,
+        totalHeight: calculatedDimensions.totalCoverHeight,
+        trimWidth: calculatedDimensions.trimWidthNum,
+        trimHeight: calculatedDimensions.trimHeightNum,
+        spineWidth: calculatedDimensions.spineWidth ?? 0,
+        bleed: calculatedDimensions.bleedAmount ?? 0,
+        wrapAmount: calculatedDimensions.wrapAmount ?? 0,
+        hingeWidth: calculatedDimensions.hingeWidth ?? 0,
+        boardWidth: calculatedDimensions.boardWidth ?? 0,
+        boardHeight: calculatedDimensions.boardHeight ?? 0,
+        frontPanelBoardWidth: calculatedDimensions.frontPanelBoardWidth ?? 0,
+        safetyMargin: calculatedDimensions.safetyMargin ?? 0,
+        bookTitle: calculatedDimensions.bookTitle || 'Untitled',
+        includeDustJacket: true,
+        dustJacketFlapWidthInches: calculatedDimensions.dustJacketFlapWidthInches,
+        dustJacketFoldInches: calculatedDimensions.dustJacketFoldInches,
+        dustJacketTotalWidth: calculatedDimensions.dustJacketTotalWidth,
+        dustJacketTotalHeight: calculatedDimensions.dustJacketTotalHeight,
+      };
+      const apiBase = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
+      const response = await fetch(`${apiBase.replace(/\/$/, '')}/api/generate-dust-jacket`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({ error: response.statusText }));
+        const msg = errData.error || `Server responded with status ${response.status}.`;
+        if (response.status === 404) {
+          throw new Error(`${msg} Rebuild and restart the backend (npm run build && npm start in my-app-backend) so the /api/generate-dust-jacket route is available.`);
+        }
+        throw new Error(msg);
+      }
+      const blob = await response.blob();
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'dust-jacket-check.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+    } catch (err: any) {
+      setError(`Dust jacket download failed: ${err?.message ?? err}`);
     } finally {
       setIsProcessing(false);
       setCurrentProcessingFormat(null);
@@ -924,7 +1004,7 @@ const App: React.FC = () => {
                     {formData.bindingType === BindingType.CASE_BIND && (
                       <>
                         <div className="flex items-center gap-2">
-                          <input type="checkbox" id="includeDustJacket" checked={!!formData.includeDustJacket} onChange={() => setFormData(prev => ({ ...prev, includeDustJacket: !prev.includeDustJacket, dustJacketFlapWidthInches: !prev.includeDustJacket ? (prev.dustJacketFlapWidthInches ?? 3) : prev.dustJacketFlapWidthInches }))} className="h-3 w-3 rounded border-grey-300 dark:border-grey-600 text-system-info dark:text-brand-orange focus:ring-system-info dark:focus:ring-brand-orange" />
+                          <input type="checkbox" id="includeDustJacket" checked={!!formData.includeDustJacket} onChange={() => { clearTemplateResults(); setFormData(prev => ({ ...prev, includeDustJacket: !prev.includeDustJacket, dustJacketFlapWidthInches: !prev.includeDustJacket ? (prev.dustJacketFlapWidthInches ?? 3) : prev.dustJacketFlapWidthInches })); }} className="h-3 w-3 rounded border-grey-300 dark:border-grey-600 text-system-info dark:text-brand-orange focus:ring-system-info dark:focus:ring-brand-orange" />
                           <label htmlFor="includeDustJacket" className="text-sm font-medium">Include dust jacket</label>
                         </div>
                         {formData.includeDustJacket && (
@@ -938,7 +1018,7 @@ const App: React.FC = () => {
                                   variant={(formData.dustJacketFlapWidthInches ?? 3) === n ? 'primary' : 'outline'}
                                   size="sm"
                                   isFullWidth
-                                  onClick={() => setFormData(prev => ({ ...prev, dustJacketFlapWidthInches: n }))}
+                                  onClick={() => { clearTemplateResults(); setFormData(prev => ({ ...prev, dustJacketFlapWidthInches: n })); }}
                                   aria-pressed={(formData.dustJacketFlapWidthInches ?? 3) === n}
                                   aria-label={`Flap width ${n} inches`}
                                 >
@@ -1002,13 +1082,25 @@ const App: React.FC = () => {
                 Download PDF
               </Button>
             )}
+            {showDustJacketTab && (
+              <Button
+                onClick={handleDownloadDustJacketCheck}
+                variant="outline"
+                size="sm"
+                leftIcon={<Icon size="sm">download</Icon>}
+                isDisabled={isProcessing}
+                className="flex items-center"
+              >
+                Download dust jacket (check)
+              </Button>
+            )}
           </div>
           {calculatedDimensions ? (
             <div className="space-y-6">
               <Tabs value={previewTab} onValueChange={({ value }) => { if (value === 'cover' || value === 'dustJacket' || value === 'interior') setPreviewTab(value); }}>
                 <Tabs.List className="mb-2">
                   <Tabs.Tab value="cover">Cover</Tabs.Tab>
-                  <Tabs.Tab value="dustJacket">Dust Jacket</Tabs.Tab>
+                  {showDustJacketTab && <Tabs.Tab value="dustJacket">Dust Jacket</Tabs.Tab>}
                   <Tabs.Tab value="interior">Interior</Tabs.Tab>
                 </Tabs.List>
                 <Tabs.Panels>
@@ -1037,18 +1129,20 @@ const App: React.FC = () => {
                       )}
                     </div>
                   </Tabs.Panel>
-                  <Tabs.Panel value="dustJacket">
-                    <div id="dust-jacket-preview-content" className="p-4 pt-0">
-                      <div className="flex justify-end items-center mb-1">
-                        <label htmlFor="showTechnicalGuidesToggleDj" className="flex items-center text-xs text-grey-500 dark:text-grey-400 cursor-pointer">
-                          <input type="checkbox" id="showTechnicalGuidesToggleDj" checked={showTechnicalGuides} onChange={() => setShowTechnicalGuides(!showTechnicalGuides)} className="mr-1 h-3 w-3 rounded border-grey-300 dark:border-grey-600 text-system-info dark:text-brand-orange focus:ring-system-info dark:focus:ring-brand-orange dark:focus:ring-offset-grey-800" /> Show Technical Guides
-                        </label>
+                  {showDustJacketTab && (
+                    <Tabs.Panel value="dustJacket">
+                      <div id="dust-jacket-preview-content" className="p-4 pt-0">
+                        <div className="flex justify-end items-center mb-1">
+                          <label htmlFor="showTechnicalGuidesToggleDj" className="flex items-center text-xs text-grey-500 dark:text-grey-400 cursor-pointer">
+                            <input type="checkbox" id="showTechnicalGuidesToggleDj" checked={showTechnicalGuides} onChange={() => setShowTechnicalGuides(!showTechnicalGuides)} className="mr-1 h-3 w-3 rounded border-grey-300 dark:border-grey-600 text-system-info dark:text-brand-orange focus:ring-system-info dark:focus:ring-brand-orange dark:focus:ring-offset-grey-800" /> Show Technical Guides
+                          </label>
+                        </div>
+                        <div className="border border-border-color dark:border-dark-border-color rounded p-2 bg-bg-tertiary dark:bg-dark-bg-secondary aspect-[1.414] md:aspect-[1.6] lg:aspect-[1.7] flex items-center justify-center">
+                          <DustJacketPreview calculations={calculatedDimensions} showTechnicalGuides={showTechnicalGuides} />
+                        </div>
                       </div>
-                      <div className="border border-border-color dark:border-dark-border-color rounded p-2 bg-bg-tertiary dark:bg-dark-bg-secondary aspect-[1.414] md:aspect-[1.6] lg:aspect-[1.7] flex items-center justify-center">
-                        <DustJacketPreview calculations={calculatedDimensions} showTechnicalGuides={showTechnicalGuides} />
-                      </div>
-                    </div>
-                  </Tabs.Panel>
+                    </Tabs.Panel>
+                  )}
                   <Tabs.Panel value="interior">
                     {calculatedDimensions && (
                       <div id="interior-setup-content" className="p-0">
